@@ -1,4 +1,4 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="zh-CN">
 <head>
 <meta charset="utf-8">
@@ -7,672 +7,1670 @@
 <style>
 *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent;user-select:none}
 :root{
-  --bg:#1a0f2e;--panel:#2a1a42;--card:#3a2558;--border:#5a3d80;
-  --green:#76d59a;--yellow:#ffd36e;--red:#ff7070;--pink:#ff6fae;--purple:#c084fc;--blue:#7aa7ff;
-  --gold:#ffd36e;--text:#f0e6ff;--muted:#a080c0;
+  --pk:#f5a0c0;--pk2:#d4779a;--pp:#c9a9e6;
+  --gn:#b8e0d0;--gn2:#70c080;
+  --gd:#ffd166;--gd2:#f0a030;
+  --ik:#3a2d4a;--mu:#8a7a9a;--ln:#e8dff0;
+  --bg1:#fff5fb;--bg2:#f5edff;
+  --c1a:#b8e0d0;--c1b:#8dd0b8;
+  --c2a:#f5c8d8;--c2b:#f0a0c0;
+  --c3a:#f0d090;--c3b:#f0b860;
+  --c4a:#d0b0f0;--c4b:#b880e0;
+  --c5a:#f0a0e0;--c5b:#ff80b0;
+  --fba:#a8d8a0;--fbb:#70c080;
+  /* shrub route */
+  --sh1a:#c8e6a0;--sh1b:#90c060;
+  --sh2a:#a0d080;--sh2b:#60a840;
+  --sh3a:#80c868;--sh3b:#409828;
+  --sh4a:#60b850;--sh4b:#208020;
+  --sh5a:#40e880;--sh5b:#10c050;
+  /* fruit tree route */
+  --ft1a:#ffe0a0;--ft1b:#f0b840;
+  --ft2a:#ffd080;--ft2b:#e89820;
+  --ft3a:#ffb860;--ft3b:#d07010;
+  --ft4a:#ff9840;--ft4b:#b05000;
+  --ft5a:#ffcc20;--ft5b:#e08000;
+  /* garden ui */
+  --grd1:#e8f5e0;--grd2:#d0f0c0;
+  --grd-border:#90c060;
 }
-html,body{height:100%;overflow:hidden;background:var(--bg);font-family:-apple-system,BlinkMacSystemFont,"Microsoft YaHei",sans-serif;color:var(--text)}
-body{display:flex;flex-direction:column;align-items:center;height:100%}
+html,body{height:100%;overflow:hidden;font-family:-apple-system,BlinkMacSystemFont,"Microsoft YaHei",sans-serif}
+body{background:linear-gradient(180deg,var(--bg1),var(--bg2));display:flex;flex-direction:column;align-items:center;justify-content:flex-start}
 
-/* ---- TOP BAR ---- */
-#topbar{
-  width:100%;max-width:480px;flex-shrink:0;
-  height:52px;padding:0 14px;
-  display:flex;align-items:center;justify-content:space-between;gap:10px;
-  background:rgba(42,26,66,0.96);border-bottom:1px solid var(--border);
-}
-.top-info{display:flex;align-items:center;gap:6px;font-size:0.82rem;font-weight:700}
-.top-info span{opacity:.7;font-weight:400}
-#stamina-bar-wrap{display:flex;align-items:center;gap:6px;flex:1;min-width:0}
-.stamina-track{flex:1;height:10px;border-radius:999px;background:rgba(255,255,255,0.1);overflow:hidden}
-#stamina-fill{height:100%;border-radius:999px;background:var(--green);transition:width .4s,background .4s}
-#stamina-text{font-size:0.75rem;white-space:nowrap;min-width:52px;text-align:right;color:var(--muted)}
-.gold-wrap{display:flex;align-items:center;gap:4px;font-size:0.88rem;font-weight:800;color:var(--gold);white-space:nowrap}
-.lv-wrap{display:flex;align-items:center;gap:4px;font-size:0.78rem;color:var(--purple)}
+/* ── GAME CONTAINER ── */
+#game{width:100%;max-width:480px;height:100dvh;display:flex;flex-direction:column;padding:6px 8px 6px;gap:4px;overflow:hidden}
 
-/* ---- MIDDLE SCROLL ---- */
-#mid{width:100%;max-width:480px;flex:1;min-height:0;overflow-y:auto;overflow-x:hidden;padding:10px 10px 4px}
-#mid::-webkit-scrollbar{width:4px}
-#mid::-webkit-scrollbar-thumb{background:var(--border);border-radius:2px}
+/* ── TOP BAR ── */
+#topbar{display:flex;align-items:center;gap:6px;flex-shrink:0}
+.avatar-wrap{position:relative;width:44px;height:44px;flex-shrink:0;cursor:pointer}
+.avatar-wrap svg{position:absolute;inset:0;width:100%;height:100%}
+.avatar-inner{position:absolute;inset:4px;border-radius:50%;background:linear-gradient(135deg,var(--pk),var(--pp));display:flex;flex-direction:column;align-items:center;justify-content:center;color:#fff;line-height:1}
+.avatar-emoji{font-size:13px}
+.avatar-level{font-size:9px;font-weight:900}
+.stat-pill{display:flex;align-items:center;gap:3px;padding:4px 10px;border-radius:999px;background:rgba(255,255,255,.75);font-size:12px;font-weight:700;color:var(--ik);white-space:nowrap;box-shadow:0 1px 4px rgba(0,0,0,.06)}
+.stat-pill .ico{font-size:14px}
+#hp-pill{transition:background .3s}
+.hp-green{background:rgba(255,255,255,.75)!important}
+.hp-yellow{background:rgba(255,240,180,.9)!important}
+.hp-red{background:rgba(255,200,200,.9)!important;animation:hpblink 1s infinite}
+@keyframes hpblink{0%,100%{opacity:1}50%{opacity:.6}}
+.spacer{flex:1}
 
-/* ---- FLOWERBEDS ---- */
-#flowerbeds{display:flex;gap:10px;margin-bottom:10px}
-.flowerbed{
-  flex:1;padding:10px 8px 8px;border-radius:16px;
-  background:var(--panel);border:1.5px solid var(--border);
-  display:flex;flex-direction:column;align-items:center;gap:4px;
-  cursor:pointer;position:relative;transition:transform .15s;
-}
-.flowerbed:active{transform:scale(0.95)}
-.fb-icon{font-size:2rem;line-height:1}
-.fb-label{font-size:0.72rem;font-weight:700;color:var(--muted)}
-.fb-count{
-  position:absolute;top:6px;right:8px;
-  min-width:20px;height:20px;border-radius:999px;
-  background:var(--pink);color:#fff;font-size:0.7rem;font-weight:900;
-  display:flex;align-items:center;justify-content:center;padding:0 4px;
-}
-.fb-timer{font-size:0.7rem;color:var(--muted)}
-.fb-ready{color:var(--green);font-weight:800;font-size:0.78rem;animation:pulse 1s infinite}
-@keyframes pulse{0%,100%{opacity:1}50%{opacity:.5}}
+/* ── ORDERS ── */
+#orders{display:flex;gap:5px;flex-shrink:0;min-height:72px}
+.order-card{flex:1;border-radius:12px;padding:5px 6px;background:rgba(255,255,255,.65);border:1.5px solid var(--ln);display:flex;flex-direction:column;align-items:center;gap:2px;transition:.2s;position:relative;overflow:hidden}
+.order-card.ready{border-color:var(--pk);background:#fff0f6}
+.order-card.completed{border-color:var(--gd);background:#fff8e0;opacity:.75}
+.order-demands{display:flex;gap:4px;align-items:center;flex-wrap:wrap;justify-content:center;min-height:24px}
+.demand-item{display:flex;align-items:center;gap:1px;font-size:10px}
+.demand-icon{width:20px;height:20px;border-radius:5px;display:grid;place-items:center;font-size:11px;transition:.2s}
+.demand-icon.met{opacity:1}
+.demand-icon.unmet{opacity:.35;filter:grayscale(.4)}
+.demand-count{font-size:9px;font-weight:700;color:var(--ik)}
+.order-reward{font-size:10px;font-weight:700;color:var(--gd2)}
+.order-btn{margin-top:1px;padding:2px 10px;border-radius:999px;border:0;font-size:10px;font-weight:700;cursor:pointer;transition:.15s}
+.order-btn.pending{background:#eee;color:var(--mu);pointer-events:none}
+.order-btn.ready{background:var(--pk);color:#fff;box-shadow:0 2px 6px rgba(245,160,192,.5)}
+.order-btn.ready:active{transform:scale(.95)}
+.order-btn.completed{background:var(--gd);color:#7a5a00}
+.order-fly{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);font-size:18px;pointer-events:none;animation:flyup .6s ease-out forwards;opacity:0}
+@keyframes flyup{0%{opacity:1;transform:translate(-50%,-50%) scale(.5)}60%{opacity:1;transform:translate(-50%,-120%) scale(1.2)}100%{opacity:0;transform:translate(-50%,-180%) scale(1)}}
 
-/* ---- MERGE BOARD ---- */
-#board-wrap{background:var(--panel);border-radius:16px;border:1.5px solid var(--border);padding:8px;margin-bottom:10px}
-#board-title{font-size:0.78rem;font-weight:700;color:var(--muted);margin-bottom:6px;padding:0 2px}
-#board{
-  display:grid;grid-template-columns:repeat(6,1fr);gap:4px;
-  touch-action:none;
-}
-.cell{
-  aspect-ratio:1;border-radius:10px;
-  background:rgba(255,255,255,0.05);border:1.5px solid rgba(255,255,255,0.08);
-  display:flex;align-items:center;justify-content:center;
-  position:relative;transition:background .15s,border-color .15s;
-}
-.cell.drag-over{background:rgba(255,255,255,0.15);border-color:var(--blue)}
-.item{
-  width:82%;height:82%;border-radius:8px;
-  display:flex;flex-direction:column;align-items:center;justify-content:center;
-  font-size:1.45rem;line-height:1;cursor:grab;
-  transition:transform .15s;position:relative;
-  background:rgba(255,255,255,0.07);
-}
-.item:active{cursor:grabbing}
-.item.dragging{opacity:.4}
-.item.max-level::after{
-  content:"★";position:absolute;top:-4px;right:-4px;
-  font-size:0.6rem;background:var(--gold);color:#3a1a00;
-  border-radius:4px;padding:1px 3px;font-weight:900;
-}
-.item-lv{position:absolute;bottom:1px;right:3px;font-size:0.55rem;color:var(--muted);font-weight:700}
-.merge-flash{animation:mergeAnim .45s ease-out forwards}
-@keyframes mergeAnim{0%{transform:scale(0.3);opacity:0}60%{transform:scale(1.25)}100%{transform:scale(1);opacity:1}}
+/* ── BOARD ── */
+#board-wrap{flex:1;display:flex;align-items:center;justify-content:center;min-height:0;padding:2px 0}
+#board{display:grid;grid-template-columns:repeat(7,1fr);gap:3px;padding:6px;border-radius:16px;background:rgba(255,255,255,.45);border:2px solid #f0d8e8;width:100%;aspect-ratio:7/9;max-height:100%}
+.cell{border-radius:8px;background:rgba(255,255,255,.5);border:1px dashed var(--ln);display:grid;place-items:center;cursor:pointer;transition:.1s;position:relative}
+.cell.has-item{background:#fff;border:1px solid var(--ln)}
+.cell.drag-over{background:#fff0f6;border-color:var(--pk);border-style:solid}
+.cell.match-hint{border-color:var(--gd);background:#fffbe6;border-style:solid}
+.cell.selected{outline:2px solid var(--pk);outline-offset:-2px;background:#fff0f6}
+.item{width:82%;height:82%;border-radius:8px;display:grid;place-items:center;font-size:clamp(14px,3.5vw,22px);position:relative;pointer-events:none;transition:.12s}
+.item.c1{background:linear-gradient(135deg,var(--c1a),var(--c1b))}
+.item.c2{background:linear-gradient(135deg,var(--c2a),var(--c2b))}
+.item.c3{background:linear-gradient(135deg,var(--c3a),var(--c3b))}
+.item.c4{background:linear-gradient(135deg,var(--c4a),var(--c4b))}
+.item.c5{background:linear-gradient(135deg,var(--c5a),var(--c5b));box-shadow:0 0 10px rgba(240,128,176,.4)}
+.item.fb{background:linear-gradient(135deg,var(--fba),var(--fbb))}
+.item-lv{position:absolute;top:-3px;right:-3px;width:14px;height:14px;border-radius:50%;background:#fff;color:var(--ik);font-size:7px;font-weight:900;display:grid;place-items:center;box-shadow:0 1px 3px rgba(0,0,0,.15)}
+.item-max{position:absolute;bottom:-1px;font-size:6px;color:var(--gd);font-weight:900;text-shadow:0 0 4px #fff}
+.item.fb .item-lv{background:var(--gd);color:#7a5a00}
+.item-label{position:absolute;bottom:1px;font-size:5.5px;color:rgba(255,255,255,.9);font-weight:700;pointer-events:none}
 
-/* ---- ORDERS ---- */
-#orders-wrap{background:var(--panel);border-radius:16px;border:1.5px solid var(--border);padding:8px;margin-bottom:10px}
-#orders-title{font-size:0.78rem;font-weight:700;color:var(--muted);margin-bottom:6px;padding:0 2px}
-#orders{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
-.order-slot{
-  border-radius:12px;border:1.5px solid var(--border);
-  background:rgba(255,255,255,0.04);padding:8px 6px;
-  display:flex;flex-direction:column;align-items:center;gap:4px;
-  position:relative;min-height:100px;cursor:pointer;
-  transition:border-color .2s,background .2s;
-}
-.order-slot.drop-target{border-color:var(--green);background:rgba(118,213,154,0.08)}
-.order-slot.done{opacity:.5;cursor:default}
-.order-demand{font-size:1.2rem;line-height:1}
-.order-need{font-size:0.65rem;color:var(--muted);text-align:center;line-height:1.4}
-.order-reward{font-size:0.7rem;color:var(--gold);font-weight:700}
-.order-progress{font-size:0.7rem;color:var(--green);font-weight:700}
-.order-check{position:absolute;top:4px;right:6px;font-size:0.9rem}
+/* dragging ghost */
+#drag-ghost{position:fixed;pointer-events:none;z-index:999;transform:translate(-50%,-50%) scale(1.15);opacity:.85;transition:none}
+.cell.dragging-src{opacity:.35}
 
-/* ---- EXP BAR ---- */
-#exp-wrap{background:var(--panel);border-radius:12px;border:1.5px solid var(--border);padding:8px 10px;margin-bottom:10px}
-.exp-row{display:flex;justify-content:space-between;align-items:center;margin-bottom:4px;font-size:0.72rem}
-.exp-track{height:8px;border-radius:999px;background:rgba(255,255,255,0.08);overflow:hidden}
-#exp-fill{height:100%;border-radius:999px;background:linear-gradient(90deg,var(--purple),var(--pink));transition:width .5s}
+/* merge anim */
+@keyframes mergeIn{0%{transform:scale(0.3);opacity:0}60%{transform:scale(1.25)}100%{transform:scale(1);opacity:1}}
+@keyframes pulse{0%,100%{box-shadow:0 0 0 0 rgba(245,160,192,.45),0 3px 8px rgba(0,0,0,.25)}50%{box-shadow:0 0 0 8px rgba(245,160,192,.0),0 3px 8px rgba(0,0,0,.25)}}
+.merge-anim{animation:mergeIn .35s ease-out}
 
-/* ---- TOAST ---- */
-#toast{
-  position:fixed;top:60px;left:50%;transform:translateX(-50%) translateY(-20px);
-  background:rgba(255,255,255,0.95);color:#2a1438;
-  padding:9px 18px;border-radius:14px;font-size:0.82rem;font-weight:600;
-  z-index:100;pointer-events:none;opacity:0;transition:opacity .25s,transform .25s;
-  white-space:nowrap;max-width:280px;text-align:center;
-}
-#toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+/* stamina flash */
+@keyframes staminaShake{0%,100%{transform:translateX(0)}25%{transform:translateX(-4px)}75%{transform:translateX(4px)}}
+.stamina-shake{animation:staminaShake .3s}
 
-/* ---- FLOAT TEXT ---- */
-.float-text{
-  position:fixed;pointer-events:none;z-index:200;
-  font-size:1.1rem;font-weight:900;color:var(--gold);
-  animation:floatUp .9s ease-out forwards;
-}
-@keyframes floatUp{0%{opacity:1;transform:translateY(0)}100%{opacity:0;transform:translateY(-60px)}}
+/* ── TOAST ── */
+#toast{position:fixed;bottom:90px;left:50%;transform:translateX(-50%);background:rgba(58,45,74,.85);color:#fff;padding:8px 20px;border-radius:999px;font-size:13px;pointer-events:none;z-index:500;opacity:0;transition:opacity .25s;white-space:nowrap}
+#toast.show{opacity:1}
 
-/* ---- MODAL ---- */
-#modal-mask{
-  position:fixed;inset:0;z-index:50;background:rgba(0,0,0,0.55);
-  display:none;align-items:center;justify-content:center;padding:24px;
+/* ── MODAL ── */
+#modal-wrap{position:fixed;inset:0;z-index:800;display:none;align-items:center;justify-content:center;padding:24px;background:rgba(42,31,56,.4);backdrop-filter:blur(2px)}
+#modal-wrap.show{display:flex}
+#modal{width:100%;max-width:340px;background:#fff;border-radius:24px;padding:24px 20px;text-align:center;box-shadow:0 20px 50px rgba(0,0,0,.15);animation:modalIn .25s ease-out}
+@keyframes modalIn{from{transform:scale(.85);opacity:0}to{transform:scale(1);opacity:1}}
+#modal h3{font-size:20px;margin-bottom:8px;color:var(--ik)}
+#modal .modal-body{color:var(--mu);line-height:1.7;font-size:14px;margin-bottom:16px}
+#modal .modal-btn{border:0;border-radius:14px;padding:11px 32px;color:#fff;background:linear-gradient(135deg,var(--pk),var(--pp));font-weight:700;cursor:pointer;font-size:15px;box-shadow:0 4px 14px rgba(245,160,192,.5)}
+
+/* ── GOLD FLOAT ── */
+.gold-float{position:fixed;font-size:16px;font-weight:900;color:var(--gd);pointer-events:none;z-index:600;animation:goldup .9s ease-out forwards;text-shadow:0 1px 3px rgba(0,0,0,.2)}
+@keyframes goldup{0%{opacity:1;transform:translateY(0) scale(.8)}100%{opacity:0;transform:translateY(-60px) scale(1.1)}}
+
+/* ── LEVEL UP MODAL ── */
+#levelup-modal{background:linear-gradient(135deg,#fff5fb,#f5edff)}
+#levelup-modal h3{font-size:22px;color:var(--pk2)}
+
+/* ── BOTTOM NAV ── */
+#bottom-nav{display:flex;flex-shrink:0;gap:2px;height:48px}
+.nav-btn{flex:1;border:0;border-radius:12px;background:rgba(255,255,255,.6);color:var(--ik);font-size:10px;font-weight:700;cursor:pointer;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:1px;transition:.15s;border:1.5px solid transparent}
+.nav-btn .nav-ico{font-size:18px}
+.nav-btn.active{background:linear-gradient(135deg,var(--pk),var(--pp));color:#fff;border-color:transparent;box-shadow:0 2px 8px rgba(245,160,192,.4)}
+.nav-btn.garden-nav{position:relative}
+.nav-btn.garden-nav .nav-badge{position:absolute;top:4px;right:8px;background:var(--gd);color:#7a5a00;font-size:7px;font-weight:900;padding:1px 4px;border-radius:999px;display:none}
+.nav-btn.garden-nav .nav-badge.show{display:block}
+
+/* ── GARDEN OVERLAY ── */
+#garden-overlay{position:fixed;inset:0;z-index:700;display:none;flex-direction:column;background:linear-gradient(180deg,#e8f5e0,#d0eec0);max-width:480px;left:50%;transform:translateX(-50%)}
+#garden-overlay.show{display:flex}
+
+/* garden header */
+.garden-header{display:flex;align-items:center;gap:8px;padding:10px 12px 6px;flex-shrink:0;background:rgba(255,255,255,.5);border-bottom:1px solid rgba(144,192,96,.3)}
+.garden-back-btn{background:rgba(255,255,255,.8);border:1px solid var(--ln);border-radius:999px;padding:4px 12px;font-size:12px;font-weight:700;cursor:pointer;color:var(--ik)}
+.garden-title{font-size:15px;font-weight:900;color:var(--ik);flex:1;text-align:center}
+.garden-gold-badge{background:rgba(255,255,255,.8);border-radius:999px;padding:3px 10px;font-size:12px;font-weight:700;color:var(--gd2)}
+
+/* zone overview */
+#zone-overview{flex:1;overflow-y:auto;padding:10px 12px;display:flex;flex-direction:column;gap:8px}
+.zone-card{border-radius:14px;padding:12px 14px;background:rgba(255,255,255,.75);border:2px solid rgba(144,192,96,.3);cursor:pointer;transition:.15s;position:relative;overflow:hidden}
+.zone-card:active{transform:scale(.98)}
+.zone-card.locked{opacity:.55;cursor:default;filter:grayscale(.3)}
+.zone-card.active-zone{border-color:var(--grd-border);background:#fff}
+.zone-card-top{display:flex;align-items:center;gap:8px;margin-bottom:6px}
+.zone-icon{font-size:24px}
+.zone-name{font-size:14px;font-weight:900;color:var(--ik);flex:1}
+.zone-lock-badge{font-size:10px;color:var(--mu);background:rgba(138,122,154,.12);padding:2px 8px;border-radius:999px}
+.zone-unlock-badge{font-size:10px;color:#fff;background:linear-gradient(135deg,var(--pk),var(--pp));padding:2px 8px;border-radius:999px}
+.zone-progress-bar{height:6px;border-radius:3px;background:rgba(144,192,96,.2);overflow:hidden}
+.zone-progress-fill{height:100%;background:linear-gradient(90deg,var(--grd-border),#40a010);border-radius:3px;transition:.4s}
+.zone-progress-text{font-size:10px;color:var(--mu);margin-top:3px}
+.zone-complete-badge{position:absolute;top:10px;right:12px;font-size:10px;color:#40a010;font-weight:900}
+
+/* tile list inside zone */
+#tile-view{flex:1;display:flex;flex-direction:column}
+.tile-list{display:grid;grid-template-columns:1fr 1fr;gap:8px;padding:10px 12px;overflow-y:auto}
+.tile-card{border-radius:12px;padding:10px;background:rgba(255,255,255,.85);border:2px solid rgba(144,192,96,.25);cursor:pointer;transition:.15s;text-align:center}
+.tile-card:active{transform:scale(.97)}
+.tile-card.wrecked{border-color:#c8b8a0;background:#fdf6ee}
+.tile-card.in-progress{border-color:var(--grd-border)}
+.tile-card.done{border-color:var(--gd);background:#fffbe6}
+.tile-card-icon{font-size:28px;margin-bottom:4px}
+.tile-card-name{font-size:11px;font-weight:700;color:var(--ik)}
+.tile-card-status{font-size:9px;color:var(--mu);margin-top:2px}
+.tile-card-cost{font-size:10px;font-weight:700;color:var(--gd2)}
+
+/* tile detail (point-by-point) */
+#tile-detail{flex:1;overflow-y:auto;padding:10px 12px;display:flex;flex-direction:column;gap:8px}
+.point-card{border-radius:12px;padding:12px;background:rgba(255,255,255,.85);border:2px solid rgba(144,192,96,.25);transition:.15s}
+.point-card.active-point{border-color:var(--pk);background:#fff0f6;box-shadow:0 2px 8px rgba(245,160,192,.2)}
+.point-card.locked-point{opacity:.45;pointer-events:none}
+.point-card.done-point{border-color:var(--gd);background:#fffbe6;opacity:.7}
+.point-card-top{display:flex;align-items:center;gap:8px}
+.point-icon{font-size:22px}
+.point-info{flex:1}
+.point-name{font-size:12px;font-weight:700;color:var(--ik)}
+.point-type-badge{font-size:9px;padding:1px 6px;border-radius:999px;color:#fff;display:inline-block;margin-top:2px}
+.point-type-badge.cleanup{background:#a09080}
+.point-type-badge.functional{background:linear-gradient(135deg,var(--pk),var(--pp))}
+.point-type-badge.decoration{background:linear-gradient(135deg,var(--gn),var(--gn2))}
+.point-action-btn{border:0;border-radius:10px;padding:6px 14px;font-size:11px;font-weight:700;cursor:pointer;transition:.15s}
+.point-action-btn.can-act{background:linear-gradient(135deg,var(--pk),var(--pp));color:#fff;box-shadow:0 2px 6px rgba(245,160,192,.4)}
+.point-action-btn.can-act:active{transform:scale(.95)}
+.point-action-btn.no-gold{background:#eee;color:var(--mu)}
+.point-action-btn.done{background:var(--gd);color:#7a5a00;pointer-events:none}
+.point-action-btn.locked{background:#ddd;color:#aaa;pointer-events:none}
+
+/* unlock feature popup */
+.unlock-popup{position:fixed;bottom:100px;left:50%;transform:translateX(-50%);background:linear-gradient(135deg,var(--pk),var(--pp));color:#fff;padding:10px 20px;border-radius:14px;font-size:13px;font-weight:700;z-index:900;pointer-events:none;opacity:0;transition:opacity .3s;text-align:center;box-shadow:0 4px 16px rgba(245,160,192,.5);white-space:nowrap}
+.unlock-popup.show{opacity:1}
+
+/* item shrub */
+.item.sh1{background:linear-gradient(135deg,var(--sh1a),var(--sh1b))}
+.item.sh2{background:linear-gradient(135deg,var(--sh2a),var(--sh2b))}
+.item.sh3{background:linear-gradient(135deg,var(--sh3a),var(--sh3b))}
+.item.sh4{background:linear-gradient(135deg,var(--sh4a),var(--sh4b))}
+.item.sh5{background:linear-gradient(135deg,var(--sh5a),var(--sh5b))}
+/* item fruit tree */
+.item.ft1{background:linear-gradient(135deg,var(--ft1a),var(--ft1b))}
+.item.ft2{background:linear-gradient(135deg,var(--ft2a),var(--ft2b))}
+.item.ft3{background:linear-gradient(135deg,var(--ft3a),var(--ft3b))}
+.item.ft4{background:linear-gradient(135deg,var(--ft4a),var(--ft4b))}
+.item.ft5{background:linear-gradient(135deg,var(--ft5a),var(--ft5b))}
+/* shrub flowerbed */
+.item.shb{background:linear-gradient(135deg,#b0e880,#60b030)}
+/* fruit flowerbed */
+.item.ftb{background:linear-gradient(135deg,#ffd060,#e08010)}
+
+/* timed order card */
+.order-card.timed{border-color:#d4af37;background:linear-gradient(135deg,#fffbea,#fff8d0)}
+.order-card.timed-ready{border-color:#f0a000;background:#fff8d0}
+.order-card.timed-expired{border-color:#aaa;background:#f5f5f5;opacity:.6}
+.timed-label{position:absolute;top:3px;right:5px;font-size:7px;font-weight:900;color:#d4af37;background:rgba(212,175,55,.15);padding:1px 4px;border-radius:4px}
+.timed-countdown{font-size:9px;font-weight:700;color:#c06000}
+.timed-countdown.urgent{color:#e03000;animation:hpblink 1s infinite}
+.timed-multi{font-size:9px;font-weight:700;color:#d4af37}
+
+/* responsive */
+@media(min-width:481px){
+  #game{max-width:420px;margin:0 auto;border-radius:0;box-shadow:none}
+  #garden-overlay{max-width:420px}
 }
-#modal-mask.show{display:flex}
-.modal{
-  width:100%;max-width:320px;background:var(--panel);border:1.5px solid var(--border);
-  border-radius:22px;padding:24px;text-align:center;
-}
-.modal h2{margin-bottom:8px;font-size:1.2rem}
-.modal p{color:var(--muted);font-size:0.85rem;margin-bottom:18px;line-height:1.6}
-.modal .rewards{font-size:1.4rem;margin-bottom:16px}
-.modal-btn{
-  border:0;border-radius:12px;padding:12px 24px;
-  font-size:0.95rem;font-weight:800;cursor:pointer;width:100%;
-  background:linear-gradient(135deg,var(--pink),var(--purple));color:#fff;
+@media(max-width:360px){
+  #board{gap:2px;padding:4px}
+  .cell{border-radius:6px}
 }
 </style>
 </head>
 <body>
-
-<!-- TOP BAR -->
-<div id="topbar">
-  <div class="top-info">🌸<span>梦幻花语</span></div>
-  <div id="stamina-bar-wrap">
-    <span style="font-size:1rem">♥</span>
-    <div class="stamina-track"><div id="stamina-fill"></div></div>
-    <div id="stamina-text"></div>
-  </div>
-  <div class="gold-wrap">🪙<span id="gold-val">0</span></div>
-  <div class="lv-wrap">Lv.<span id="lv-val">1</span></div>
-</div>
-
-<!-- SCROLL AREA -->
-<div id="mid">
-
-  <!-- FLOWERBEDS -->
-  <div id="flowerbeds">
-    <div class="flowerbed" id="fb0" onclick="harvestFlowerbed(0)">
-      <div class="fb-icon">🌱</div>
-      <div class="fb-label">花圃 1</div>
-      <div class="fb-timer" id="fb0-timer">-</div>
+<div id="game">
+  <!-- TOP BAR -->
+  <div id="topbar">
+    <div class="avatar-wrap" id="avatar-wrap">
+      <svg viewBox="0 0 44 44" fill="none">
+        <circle cx="22" cy="22" r="20" stroke="var(--ln)" stroke-width="3"/>
+        <circle id="xp-arc" cx="22" cy="22" r="20" stroke="url(#xpg)" stroke-width="3"
+          stroke-linecap="round" transform="rotate(-90 22 22)"
+          stroke-dasharray="125.66" stroke-dashoffset="125.66"/>
+        <defs>
+          <linearGradient id="xpg" x1="0%" y1="0%" x2="100%" y2="0%">
+            <stop offset="0%" stop-color="#f5a0c0"/>
+            <stop offset="100%" stop-color="#d4779a"/>
+          </linearGradient>
+        </defs>
+      </svg>
+      <div class="avatar-inner">
+        <span class="avatar-emoji">🌸</span>
+        <span class="avatar-level" id="player-lv">1</span>
+      </div>
     </div>
-    <div class="flowerbed" id="fb1" onclick="harvestFlowerbed(1)">
-      <div class="fb-icon">🌱</div>
-      <div class="fb-label">花圃 2</div>
-      <div class="fb-timer" id="fb1-timer">-</div>
+    <div class="stat-pill hp-green" id="hp-pill">
+      <span class="ico">❤️</span>
+      <span id="hp-text">100/100</span>
     </div>
-  </div>
-
-  <!-- MERGE BOARD -->
-  <div id="board-wrap">
-    <div id="board-title">合成盘 · 拖动同级花朵合成升级</div>
-    <div id="board"></div>
+    <div class="stat-pill">
+      <span class="ico">🪙</span>
+      <span id="gold-text">0</span>
+    </div>
+    <div class="spacer"></div>
+    <div class="stat-pill" style="font-size:11px;color:var(--mu)" id="hp-timer"></div>
   </div>
 
   <!-- ORDERS -->
-  <div id="orders-wrap">
-    <div id="orders-title">📦 订单（拖动花朵到订单槽完成订单）</div>
-    <div id="orders"></div>
+  <div id="orders"></div>
+
+  <!-- BOARD -->
+  <div id="board-wrap">
+    <div id="board"></div>
   </div>
 
-  <!-- EXP -->
-  <div id="exp-wrap">
-    <div class="exp-row">
-      <span style="font-size:.78rem;color:var(--purple);font-weight:700">经验值</span>
-      <span id="exp-text" style="font-size:.72rem;color:var(--muted)">0 / 20</span>
-    </div>
-    <div class="exp-track"><div id="exp-fill" style="width:0%"></div></div>
+  <!-- BOTTOM NAV -->
+  <div id="bottom-nav">
+    <button class="nav-btn active" id="nav-merge" onclick="switchTab('merge')">
+      <span class="nav-ico">🌸</span>
+      <span>合成</span>
+    </button>
+    <button class="nav-btn garden-nav" id="nav-garden" onclick="switchTab('garden')">
+      <span class="nav-ico">🌷</span>
+      <span>花园</span>
+      <span class="nav-badge" id="garden-badge">!</span>
+    </button>
   </div>
-
 </div>
+
+<!-- GARDEN OVERLAY -->
+<div id="garden-overlay">
+  <div class="garden-header">
+    <button class="garden-back-btn" id="garden-back-btn">← 返回</button>
+    <span class="garden-title" id="garden-title">我的花园</span>
+    <span class="garden-gold-badge">🪙 <span id="garden-gold-text">0</span></span>
+  </div>
+  <div id="garden-content" style="flex:1;overflow:hidden;display:flex;flex-direction:column"></div>
+</div>
+
+<!-- UNLOCK POPUP -->
+<div class="unlock-popup" id="unlock-popup"></div>
+
+<!-- DRAG GHOST -->
+<div id="drag-ghost" style="display:none"></div>
 
 <!-- TOAST -->
 <div id="toast"></div>
 
 <!-- MODAL -->
-<div id="modal-mask">
-  <div class="modal">
-    <h2 id="modal-title">🎉 订单完成！</h2>
-    <div class="rewards" id="modal-rewards"></div>
-    <p id="modal-msg"></p>
-    <button class="modal-btn" onclick="closeModal()">太棒了！</button>
+<div id="modal-wrap">
+  <div id="modal">
+    <h3 id="modal-title">提示</h3>
+    <div class="modal-body" id="modal-body"></div>
+    <button class="modal-btn" id="modal-btn">知道啦</button>
   </div>
 </div>
 
 <script>
-/* ============================================================
-   CONFIG
-============================================================ */
-const FLOWERS = [
-  {level:1, name:'小花苗', icon:'🌱', gold:5,  exp:2},
-  {level:2, name:'小花朵', icon:'🌸', gold:15, exp:5},
-  {level:3, name:'盛开花', icon:'🌺', gold:40, exp:12},
-  {level:4, name:'稀有花', icon:'💐', gold:100,exp:30},
-  {level:5, name:'梦幻花', icon:'🌟', gold:250,exp:80},
-];
-const MAX_LEVEL = 5;
-const BOARD_SIZE = 36;
-const STAMINA_MAX = 100;
-const STAMINA_RECOVER_SEC = 300; // 5min → demo用30s
-const STAMINA_RECOVER_SEC_DEMO = 30; // 演示加速
-const FB_INTERVAL_SEC = 60;
-const FB_INTERVAL_DEMO = 15; // 演示加速
-const FB_MAX_STORAGE = 3;
-const EXP_NEED = [0, 20, 50, 100, 200]; // level 1-5
-
-const LV_ORDER_MAX = [0, 2, 2, 3, 4, 5]; // 各等级订单可需求最高花级
-
-/* ============================================================
-   STATE
-============================================================ */
-let state = {
-  stamina: STAMINA_MAX,
-  lastStaminaTime: Date.now(),
-  gold: 0,
-  exp: 0,
-  playerLevel: 1,
-  board: Array(BOARD_SIZE).fill(null), // null | {level}
-  orders: [],
-  flowerbeds: [
-    {storage:0, lastTime: Date.now()},
-    {storage:0, lastTime: Date.now()},
+// ─────────────────── CONFIG ───────────────────
+const CFG = {
+  ROWS: 9, COLS: 7,
+  MAX_STAMINA: 100,
+  STAMINA_COST: 1,
+  STAMINA_RECOVERY_SEC: 30, // 30s for demo
+  FLOWERS: [
+    null,
+    { name:'小花苗', emoji:'🌱', cls:'c1', gold:5,  exp:2  },
+    { name:'小花朵', emoji:'🌸', cls:'c2', gold:15, exp:5  },
+    { name:'盛开花', emoji:'🌺', cls:'c3', gold:40, exp:12 },
+    { name:'稀有花', emoji:'✨', cls:'c4', gold:100,exp:30 },
+    { name:'梦幻花', emoji:'💫', cls:'c5', gold:250,exp:80 },
   ],
+  SHRUBS: [
+    null,
+    { name:'小树苗', emoji:'🌿', cls:'sh1', gold:8,  exp:3  },
+    { name:'绿植',   emoji:'🍀', cls:'sh2', gold:25, exp:8  },
+    { name:'开花灌木',emoji:'🌳', cls:'sh3', gold:60, exp:20 },
+    { name:'彩色灌木',emoji:'🌲', cls:'sh4', gold:150,exp:45 },
+    { name:'魔法灌木',emoji:'✨', cls:'sh5', gold:350,exp:100},
+  ],
+  FRUITS: [
+    null,
+    { name:'果核',   emoji:'🌰', cls:'ft1', gold:10, exp:4  },
+    { name:'小树苗', emoji:'🪴', cls:'ft2', gold:30, exp:10 },
+    { name:'开花果树',emoji:'🌸', cls:'ft3', gold:80, exp:25 },
+    { name:'结果树', emoji:'🍎', cls:'ft4', gold:200,exp:60 },
+    { name:'黄金果树',emoji:'🏆', cls:'ft5', gold:500,exp:150},
+  ],
+  FLOWERBEDS: [
+    null,
+    { emoji:'🌿', produces:1, type:'flower' },
+    { emoji:'🌻', produces:2, type:'flower' },
+    { emoji:'🌺', produces:3, type:'flower' },
+    { emoji:'✨', produces:4, type:'flower' },
+  ],
+  SHRUB_BED: { emoji:'🌿', cls:'shb', produces:1 },
+  FRUIT_BED: { emoji:'🌳', cls:'ftb', produces:1 },
+  MAX_FLOWER: 5,
+  MAX_SHRUB: 5,
+  MAX_FRUIT: 5,
+  MAX_FLOWERBED: 4,
+  EXP_TABLE: [0,0,20,50,100,200,350,550,800,1100,1500,2000,2600,3300,4100,5000],
+  MAX_LEVEL: 15,
+
+  // Garden zones
+  ZONES: [
+    { id:'Z01', name:'入口空地', icon:'🌾', unlockLevel:1,  cleanupCost:50,  tiles:['Z01_T01','Z01_T02','Z01_T03','Z01_T04','Z01_T05','Z01_T06'] },
+    { id:'Z02', name:'花圃区',   icon:'🌸', unlockLevel:3,  cleanupCost:100, tiles:['Z02_T01','Z02_T02','Z02_T03','Z02_T04','Z02_T05'] },
+    { id:'Z03', name:'果树区',   icon:'🍎', unlockLevel:5,  cleanupCost:180, tiles:['Z03_T01','Z03_T02','Z03_T03','Z03_T04'] },
+    { id:'Z04', name:'水景区',   icon:'⛲', unlockLevel:8,  cleanupCost:300, tiles:['Z04_T01','Z04_T02','Z04_T03','Z04_T04'] },
+    { id:'Z05', name:'星光花廊', icon:'⭐', unlockLevel:12, cleanupCost:500, tiles:['Z05_T01','Z05_T02','Z05_T03'] },
+  ],
+
+  // Tile configs: each tile has points (cleanup/arrange steps)
+  TILES: {
+    Z01_T01:{ name:'育苗区', points:[
+      {id:'p1',type:'cleanup',name:'清除杂草',cost:50,emoji:'🌾'},
+      {id:'p2',type:'cleanup',name:'清除碎石',cost:50,emoji:'🪨'},
+      {id:'p3',type:'arrange',name:'摆放育苗架',cost:300,emoji:'🌱',facilityId:'fac_001'},
+    ]},
+    Z01_T02:{ name:'风车角', points:[
+      {id:'p1',type:'cleanup',name:'清除旧木板',cost:50,emoji:'🪵'},
+      {id:'p2',type:'arrange',name:'摆放小风车',cost:150,emoji:'🌀',facilityId:'deco_001'},
+    ]},
+    Z01_T03:{ name:'篱笆边', points:[
+      {id:'p1',type:'cleanup',name:'清除杂草',cost:50,emoji:'🌾'},
+      {id:'p2',type:'arrange',name:'摆放木篱笆',cost:100,emoji:'🪵',facilityId:'deco_002'},
+    ]},
+    Z01_T04:{ name:'花丛角A', points:[
+      {id:'p1',type:'cleanup',name:'清除泥土堆',cost:50,emoji:'⛏️'},
+      {id:'p2',type:'arrange',name:'种植花丛',cost:80,emoji:'🌼',facilityId:'deco_003'},
+    ]},
+    Z01_T05:{ name:'花丛角B', points:[
+      {id:'p1',type:'cleanup',name:'清除碎石',cost:50,emoji:'🪨'},
+      {id:'p2',type:'arrange',name:'种植花丛',cost:80,emoji:'🌼',facilityId:'deco_003'},
+    ]},
+    Z01_T06:{ name:'边界篱笆', points:[
+      {id:'p1',type:'cleanup',name:'清除杂草',cost:50,emoji:'🌾'},
+      {id:'p2',type:'arrange',name:'摆放木篱笆',cost:100,emoji:'🪵',facilityId:'deco_002'},
+    ]},
+    Z02_T01:{ name:'灌木苗圃', points:[
+      {id:'p1',type:'cleanup',name:'清除枯枝',cost:100,emoji:'🍂'},
+      {id:'p2',type:'cleanup',name:'清除落叶',cost:100,emoji:'🍁'},
+      {id:'p3',type:'arrange',name:'建设灌木苗圃',cost:500,emoji:'🌿',facilityId:'fac_002'},
+    ]},
+    Z02_T02:{ name:'花圃架区', points:[
+      {id:'p1',type:'cleanup',name:'清除碎陶罐',cost:100,emoji:'🏺'},
+      {id:'p2',type:'cleanup',name:'平整地面',cost:100,emoji:'⛏️'},
+      {id:'p3',type:'arrange',name:'摆放花圃架',cost:400,emoji:'🌻',facilityId:'fac_003'},
+    ]},
+    Z02_T03:{ name:'小路灯区', points:[
+      {id:'p1',type:'cleanup',name:'清除枯枝',cost:100,emoji:'🍂'},
+      {id:'p2',type:'arrange',name:'安装小路灯',cost:120,emoji:'💡',facilityId:'deco_004'},
+    ]},
+    Z02_T04:{ name:'秋千区', points:[
+      {id:'p1',type:'cleanup',name:'清除倒花架',cost:100,emoji:'🌿'},
+      {id:'p2',type:'cleanup',name:'清除落叶',cost:100,emoji:'🍁'},
+      {id:'p3',type:'arrange',name:'安装秋千',cost:250,emoji:'🪢',facilityId:'deco_005'},
+    ]},
+    Z02_T05:{ name:'花圃区美化', points:[
+      {id:'p1',type:'cleanup',name:'清除碎石',cost:100,emoji:'🪨'},
+      {id:'p2',type:'arrange',name:'种植花丛',cost:80,emoji:'🌼',facilityId:'deco_003'},
+    ]},
+    Z03_T01:{ name:'果树苗圃', points:[
+      {id:'p1',type:'cleanup',name:'清除枯枝',cost:180,emoji:'🍂'},
+      {id:'p2',type:'cleanup',name:'清除滚石',cost:180,emoji:'🪨'},
+      {id:'p3',type:'cleanup',name:'平整地面',cost:180,emoji:'⛏️'},
+      {id:'p4',type:'arrange',name:'建设果树苗圃',cost:800,emoji:'🌳',facilityId:'fac_004'},
+    ]},
+    Z03_T02:{ name:'鸟屋A', points:[
+      {id:'p1',type:'cleanup',name:'清除杂草',cost:180,emoji:'🌾'},
+      {id:'p2',type:'arrange',name:'安装鸟屋',cost:180,emoji:'🏠',facilityId:'deco_006'},
+    ]},
+    Z03_T03:{ name:'鸟屋B', points:[
+      {id:'p1',type:'cleanup',name:'清除泥堆',cost:180,emoji:'⛏️'},
+      {id:'p2',type:'arrange',name:'安装鸟屋',cost:180,emoji:'🏠',facilityId:'deco_006'},
+    ]},
+    Z03_T04:{ name:'果树区美化', points:[
+      {id:'p1',type:'cleanup',name:'清除枯枝',cost:180,emoji:'🍂'},
+      {id:'p2',type:'arrange',name:'种植花丛',cost:80,emoji:'🌼',facilityId:'deco_003'},
+    ]},
+    Z04_T01:{ name:'喷泉角', points:[
+      {id:'p1',type:'cleanup',name:'清除碎裂石板',cost:300,emoji:'🪨'},
+      {id:'p2',type:'cleanup',name:'清除旧水管',cost:300,emoji:'🔧'},
+      {id:'p3',type:'cleanup',name:'清理积水',cost:300,emoji:'💧'},
+      {id:'p4',type:'arrange',name:'建设喷泉角',cost:600,emoji:'⛲',facilityId:'fac_005'},
+    ]},
+    Z04_T02:{ name:'石凳区A', points:[
+      {id:'p1',type:'cleanup',name:'清除碎石板',cost:300,emoji:'🪨'},
+      {id:'p2',type:'arrange',name:'摆放石凳',cost:100,emoji:'🪑',facilityId:'deco_007'},
+    ]},
+    Z04_T03:{ name:'石凳区B', points:[
+      {id:'p1',type:'cleanup',name:'清除碎石',cost:300,emoji:'🪨'},
+      {id:'p2',type:'arrange',name:'摆放石凳',cost:100,emoji:'🪑',facilityId:'deco_007'},
+    ]},
+    Z04_T04:{ name:'水景路灯', points:[
+      {id:'p1',type:'cleanup',name:'清除旧水管',cost:300,emoji:'🔧'},
+      {id:'p2',type:'arrange',name:'安装小路灯',cost:120,emoji:'💡',facilityId:'deco_004'},
+    ]},
+    Z05_T01:{ name:'星星灯串A', points:[
+      {id:'p1',type:'cleanup',name:'清除折断花架',cost:500,emoji:'🪵'},
+      {id:'p2',type:'cleanup',name:'清除散瓦',cost:500,emoji:'⛏️'},
+      {id:'p3',type:'arrange',name:'挂星星灯串',cost:300,emoji:'✨',facilityId:'deco_008'},
+    ]},
+    Z05_T02:{ name:'星星灯串B', points:[
+      {id:'p1',type:'cleanup',name:'清除藤蔓',cost:500,emoji:'🌿'},
+      {id:'p2',type:'cleanup',name:'清除散瓦',cost:500,emoji:'⛏️'},
+      {id:'p3',type:'arrange',name:'挂星星灯串',cost:300,emoji:'✨',facilityId:'deco_008'},
+    ]},
+    Z05_T03:{ name:'终局秋千', points:[
+      {id:'p1',type:'cleanup',name:'清除折断花架',cost:500,emoji:'🪵'},
+      {id:'p2',type:'cleanup',name:'清除藤蔓',cost:500,emoji:'🌿'},
+      {id:'p3',type:'cleanup',name:'清除散落瓦片',cost:500,emoji:'⛏️'},
+      {id:'p4',type:'arrange',name:'安装终局秋千',cost:250,emoji:'🪢',facilityId:'deco_005'},
+    ]},
+  },
+
+  // Facility effects
+  FACILITIES: {
+    fac_001:{ name:'育苗架',   effect:'unlock_flower_bed_3' },
+    fac_002:{ name:'灌木苗圃', effect:'unlock_shrub_route'  },
+    fac_003:{ name:'花圃架',   effect:'unlock_flower_bed_4' },
+    fac_004:{ name:'果树苗圃', effect:'unlock_fruit_route'  },
+    fac_005:{ name:'喷泉角',   effect:'unlock_timed_order'  },
+  },
+
+  TIMED_ORDER_DURATION: 600, // 10 min in seconds (use 60 for demo)
 };
 
-let dragState = null; // {fromCell, item}
-let idCounter = 0;
-function newItem(level){ return {id: ++idCounter, level}; }
+// ─────────────────── STATE ───────────────────
+let state = {
+  cells: Array(CFG.ROWS * CFG.COLS).fill(null),
+  stamina: CFG.MAX_STAMINA,
+  gold: 0,
+  level: 1,
+  exp: 0,
+  lastRecovery: Date.now(),
+  orders: [],
+  nextOrderId: 1,
+  garden: { tiles: {}, facilities: [], unlockedSlots: [] },
+  timedOrder: null,
+  timedOrderEnabled: false,
+  shrubRouteUnlocked: false,
+  fruitRouteUnlocked: false,
+};
 
-/* ============================================================
-   INIT
-============================================================ */
-function init(){
-  // 初始给几朵花
-  placeItem(0, newItem(1));
-  placeItem(1, newItem(1));
-  placeItem(2, newItem(1));
-  placeItem(3, newItem(2));
-  generateOrders();
-  render();
-  tick();
-  setInterval(tick, 1000);
-}
-
-/* ============================================================
-   PLACE / REMOVE
-============================================================ */
-function placeItem(cellIdx, item){
-  state.board[cellIdx] = item;
-}
-function firstEmpty(){
-  return state.board.findIndex(c => c === null);
-}
-function boardFull(){
-  return state.board.every(c => c !== null);
+// item: { id, type:'flower'|'flowerbed'|'shrub'|'shrubbed'|'fruit'|'fruitbed', level }
+let nextItemId = 1;
+function mkItem(type, level) {
+  return { id: nextItemId++, type, level };
 }
 
-/* ============================================================
-   ORDERS
-============================================================ */
-function generateOrders(){
-  state.orders = [];
-  for(let i=0;i<3;i++) state.orders.push(makeOrder(i));
-}
-function makeOrder(slot){
-  const maxLv = LV_ORDER_MAX[Math.min(state.playerLevel, 5)];
-  const needLv = Math.max(1, Math.floor(Math.random() * maxLv) + 1);
-  const needCount = needLv <= 2 ? (Math.random() < 0.5 ? 1 : 2) : 1;
-  const baseFl = FLOWERS[needLv-1];
-  const gold = baseFl.gold * needCount;
-  const exp  = baseFl.exp  * needCount;
-  return {slot, needLevel: needLv, total: needCount, submitted: 0, gold, exp, done:false};
-}
-function refreshOrder(slot){
-  state.orders[slot] = makeOrder(slot);
-}
-
-/* ============================================================
-   SUBMIT TO ORDER (drag flower → order)
-============================================================ */
-function submitToOrder(orderIdx, fromCell){
-  const order = state.orders[orderIdx];
-  const item = state.board[fromCell];
-  if(!order || order.done || !item) return false;
-  if(item.level !== order.needLevel){
-    showToast('这个订单不需要这种花 🌸');
-    return false;
+// ─────────────────── INIT ───────────────────
+function init() {
+  loadState();
+  if (state.cells.every(c => c === null)) {
+    state.cells[CFG.COLS * 7 + 1] = mkItem('flowerbed', 1);
+    state.cells[CFG.COLS * 2 + 5] = mkItem('flowerbed', 1);
   }
-  // match
-  state.board[fromCell] = null;
-  order.submitted++;
-  if(order.submitted >= order.total){
-    order.done = true;
-    state.gold += order.gold;
-    state.exp  += order.exp;
-    checkLevelUp();
-    showModal(
-      '🎉 订单完成！',
-      `🪙 +${order.gold} 金币　✨ +${order.exp} 经验`,
-      `新订单已刷新，继续合成吧！`
-    );
-    setTimeout(()=>{ refreshOrder(orderIdx); render(); }, 1200);
-  }
-  render();
-  return true;
-}
-
-/* ============================================================
-   MERGE
-============================================================ */
-function tryMerge(fromCell, toCell){
-  if(fromCell === toCell) return;
-  const a = state.board[fromCell];
-  const b = state.board[toCell];
-  if(!a || !b) return;
-  if(a.level !== b.level){ showToast('等级不同，无法合成'); return; }
-  if(a.level >= MAX_LEVEL){ showToast('已经是最高等级了 ✨'); return; }
-  if(state.stamina <= 0){ showToast('体力不足，休息一下再来合成吧 ♥'); return; }
-  // merge!
-  state.stamina--;
-  state.board[fromCell] = null;
-  const newLv = a.level + 1;
-  state.board[toCell] = newItem(newLv);
-  state.board[toCell]._new = true;
-  showFloatText(`+1 ${FLOWERS[newLv-1].name}!`);
-  if(newLv === MAX_LEVEL) showToast('🌟 合成出梦幻花！满级了！');
-  render();
-}
-
-/* ============================================================
-   FLOWERBED
-============================================================ */
-function harvestFlowerbed(idx){
-  const fb = state.flowerbeds[idx];
-  if(fb.storage <= 0){ showToast('花圃还在生长中…'); return; }
-  if(boardFull()){ showToast('合成盘满了，先合一些物品吧'); return; }
-  const count = fb.storage;
-  let placed = 0;
-  for(let i=0;i<count;i++){
-    const empty = firstEmpty();
-    if(empty === -1) break;
-    placeItem(empty, newItem(1));
-    placed++;
-  }
-  fb.storage -= placed;
-  fb.lastTime = Date.now();
-  showFloatText(`+${placed} 小花苗`);
-  render();
-}
-
-/* ============================================================
-   LEVEL UP
-============================================================ */
-function checkLevelUp(){
-  const need = EXP_NEED[Math.min(state.playerLevel, EXP_NEED.length-1)];
-  const nextNeed = EXP_NEED[Math.min(state.playerLevel+1-1, EXP_NEED.length-1)];
-  // find how much exp needed for next level
-  const levels = [0,20,50,100,200];
-  if(state.playerLevel < 5){
-    const threshold = levels[state.playerLevel]; // exp needed to reach next
-    if(state.exp >= threshold){
-      state.playerLevel = Math.min(5, state.playerLevel+1);
-      state.stamina = STAMINA_MAX;
-      showToast(`🎊 升级啦！Lv.${state.playerLevel} 体力已回满！`);
-    }
-  }
-}
-
-/* ============================================================
-   TICK (1s)
-============================================================ */
-function tick(){
-  const now = Date.now();
-
-  // stamina recovery (demo: 30s per point)
-  const elapsedStamina = (now - state.lastStaminaTime) / 1000;
-  if(state.stamina < STAMINA_MAX){
-    const recover = Math.floor(elapsedStamina / STAMINA_RECOVER_SEC_DEMO);
-    if(recover > 0){
-      state.stamina = Math.min(STAMINA_MAX, state.stamina + recover);
-      state.lastStaminaTime = now;
-    }
-  } else {
-    state.lastStaminaTime = now;
-  }
-
-  // flowerbed produce (demo: 15s)
-  for(const fb of state.flowerbeds){
-    if(fb.storage < FB_MAX_STORAGE){
-      const elapsed = (now - fb.lastTime) / 1000;
-      const produced = Math.floor(elapsed / FB_INTERVAL_DEMO);
-      if(produced > 0){
-        fb.storage = Math.min(FB_MAX_STORAGE, fb.storage + produced);
-        fb.lastTime = now;
-      }
-    }
-  }
-
-  renderTopBar();
-  renderFlowerbeds();
-}
-
-/* ============================================================
-   RENDER
-============================================================ */
-function render(){
-  renderTopBar();
-  renderFlowerbeds();
+  if (!state.orders.length) generateOrders();
   renderBoard();
   renderOrders();
-  renderExp();
+  renderTopBar();
+  startStaminaTimer();
+  if (state.timedOrderEnabled) startTimedOrderTimer();
+  updateGardenBadge();
 }
 
-function renderTopBar(){
-  const pct = (state.stamina / STAMINA_MAX * 100).toFixed(1);
-  document.getElementById('stamina-fill').style.width = pct + '%';
-  const fill = document.getElementById('stamina-fill');
-  fill.style.background = state.stamina > 50 ? 'var(--green)' : state.stamina > 20 ? 'var(--yellow)' : 'var(--red)';
-  document.getElementById('stamina-text').textContent = `${state.stamina}/${STAMINA_MAX}`;
-  document.getElementById('gold-val').textContent = state.gold;
-  document.getElementById('lv-val').textContent = state.playerLevel;
+// ─────────────────── PERSISTENCE ───────────────────
+function saveState() {
+  try { localStorage.setItem('mhhy_state', JSON.stringify(state)); } catch(e) {}
 }
-
-function renderFlowerbeds(){
-  const now = Date.now();
-  state.flowerbeds.forEach((fb,i)=>{
-    const el = document.getElementById('fb'+i);
-    const timerEl = document.getElementById('fb'+i+'-timer');
-    const icon = el.querySelector('.fb-icon');
-    // count badge
-    let badge = el.querySelector('.fb-count');
-    if(!badge){ badge=document.createElement('div'); badge.className='fb-count'; el.appendChild(badge); }
-    if(fb.storage > 0){
-      badge.textContent = fb.storage === FB_MAX_STORAGE ? 'MAX' : fb.storage;
-      badge.style.display='flex';
-      icon.textContent = '🌸';
-      timerEl.className = 'fb-ready';
-      timerEl.textContent = '点击收取';
-    } else {
-      badge.style.display='none';
-      icon.textContent = '🌱';
-      timerEl.className = 'fb-timer';
-      const elapsed = (now - fb.lastTime) / 1000;
-      const remain = Math.max(0, Math.ceil(FB_INTERVAL_DEMO - elapsed % FB_INTERVAL_DEMO));
-      timerEl.textContent = `${remain}s 后产出`;
+function loadState() {
+  try {
+    const s = localStorage.getItem('mhhy_state');
+    if (s) {
+      const loaded = JSON.parse(s);
+      Object.assign(state, loaded);
+      // offline recovery
+      const now = Date.now();
+      const elapsed = Math.floor((now - state.lastRecovery) / 1000);
+      const recovered = Math.min(Math.floor(elapsed / CFG.STAMINA_RECOVERY_SEC), CFG.MAX_STAMINA - state.stamina);
+      if (recovered > 0) {
+        state.stamina = Math.min(state.stamina + recovered, CFG.MAX_STAMINA);
+        state.lastRecovery = now;
+      }
     }
-  });
+  } catch(e) {}
 }
 
-function renderBoard(){
-  const boardEl = document.getElementById('board');
-  boardEl.innerHTML = '';
-  for(let i=0;i<BOARD_SIZE;i++){
+// ─────────────────── STAMINA ───────────────────
+let staminaInterval = null;
+function startStaminaTimer() {
+  if (staminaInterval) clearInterval(staminaInterval);
+  staminaInterval = setInterval(() => {
+    if (state.stamina < CFG.MAX_STAMINA) {
+      const now = Date.now();
+      const elapsed = Math.floor((now - state.lastRecovery) / 1000);
+      const recovered = Math.floor(elapsed / CFG.STAMINA_RECOVERY_SEC);
+      if (recovered > 0) {
+        state.stamina = Math.min(state.stamina + recovered, CFG.MAX_STAMINA);
+        state.lastRecovery = now - ((elapsed % CFG.STAMINA_RECOVERY_SEC) * 1000);
+        renderTopBar();
+        saveState();
+      }
+    }
+    updateStaminaTimer();
+  }, 1000);
+}
+
+function updateStaminaTimer() {
+  const el = document.getElementById('hp-timer');
+  if (state.stamina >= CFG.MAX_STAMINA) { el.textContent = ''; return; }
+  const now = Date.now();
+  const elapsed = Math.floor((now - state.lastRecovery) / 1000);
+  const remaining = CFG.STAMINA_RECOVERY_SEC - (elapsed % CFG.STAMINA_RECOVERY_SEC);
+  el.textContent = `+1❤️ ${remaining}s`;
+}
+
+// ─────────────────── ORDERS ───────────────────
+function generateOrders() {
+  state.orders = [];
+  for (let i = 0; i < 3; i++) generateOrder(i);
+}
+
+function generateOrder(slot) {
+  const types = ['flower'];
+  if (state.shrubRouteUnlocked) types.push('shrub');
+  if (state.fruitRouteUnlocked) types.push('fruit');
+  const itype = types[Math.floor(Math.random() * types.length)];
+  const table = itype === 'shrub' ? CFG.SHRUBS : itype === 'fruit' ? CFG.FRUITS : CFG.FLOWERS;
+  const maxReq = state.level <= 2 ? 2 : state.level <= 4 ? 3 : 4;
+  const lvl = Math.min(Math.floor(Math.random() * maxReq) + 1, 5);
+  const count = Math.random() < 0.5 ? 1 : 2;
+  const demands = [{ itype, level: lvl, count }];
+  if (Math.random() < 0.3 && lvl > 1) demands.push({ itype:'flower', level:1, count:1 });
+  const totalGold = demands.reduce((s,d)=>{ const t=d.itype==='shrub'?CFG.SHRUBS:d.itype==='fruit'?CFG.FRUITS:CFG.FLOWERS; return s+t[d.level].gold*d.count; },0);
+  const totalExp  = demands.reduce((s,d)=>{ const t=d.itype==='shrub'?CFG.SHRUBS:d.itype==='fruit'?CFG.FRUITS:CFG.FLOWERS; return s+t[d.level].exp*d.count;  },0);
+  state.orders[slot] = { id:state.nextOrderId++, slot, demands, gold:totalGold, exp:totalExp, status:'pending' };
+}
+
+function checkOrders() {
+  let changed = false;
+  for (const ord of state.orders) {
+    if (ord.status === 'completed') continue;
+    const satisfied = canFulfillOrder(ord);
+    const newStatus = satisfied ? 'ready' : 'pending';
+    if (ord.status !== newStatus) { ord.status = newStatus; changed = true; }
+  }
+  if (state.timedOrderEnabled && state.timedOrder &&
+      state.timedOrder.status !== 'completed' && state.timedOrder.status !== 'expired') {
+    const ts = canFulfillTimedOrder();
+    const ns = ts ? 'ready' : 'pending';
+    if (state.timedOrder.status !== ns) { state.timedOrder.status = ns; changed = true; }
+  }
+  if (changed) renderOrders();
+}
+
+function canFulfillOrder(ord) {
+  const counts = {};
+  for (const c of state.cells) {
+    if (c) counts[`${c.type}:${c.level}`] = (counts[`${c.type}:${c.level}`] || 0) + 1;
+  }
+  return ord.demands.every(d => (counts[`${d.itype||'flower'}:${d.level}`] || 0) >= d.count);
+}
+
+function completeOrder(slot) {
+  const ord = state.orders[slot];
+  if (!ord || ord.status !== 'ready') return;
+  for (const d of ord.demands) {
+    let need = d.count;
+    const dtype = d.itype || 'flower';
+    for (let i = 0; i < state.cells.length && need > 0; i++) {
+      const c = state.cells[i];
+      if (c && c.type === dtype && c.level === d.level) { state.cells[i] = null; need--; }
+    }
+  }
+  const g = ord.gold, e = ord.exp;
+  state.gold += g;
+  addExp(e);
+  ord.status = 'completed';
+  showGoldFloat(`+🪙${g}`);
+  playSound('order');
+  setTimeout(() => {
+    generateOrder(slot);
+    checkOrders();
+    renderOrders();
+    renderBoard();
+    saveState();
+  }, 1800);
+  renderOrders();
+  renderTopBar();
+  checkOrders();
+  saveState();
+}
+
+function addExp(amount) {
+  if (state.level >= CFG.MAX_LEVEL) return;
+  state.exp += amount;
+  checkLevelUp();
+  renderTopBar();
+}
+
+function checkLevelUp() {
+  while (state.level < CFG.MAX_LEVEL && state.exp >= CFG.EXP_TABLE[state.level + 1]) {
+    state.level++;
+    state.stamina = CFG.MAX_STAMINA;
+    state.lastRecovery = Date.now();
+    showLevelUpModal(state.level);
+  }
+}
+
+// ─────────────────── RENDER ───────────────────
+function renderTopBar() {
+  document.getElementById('player-lv').textContent = state.level;
+  document.getElementById('hp-text').textContent = `${state.stamina}/${CFG.MAX_STAMINA}`;
+  document.getElementById('gold-text').textContent = state.gold.toLocaleString();
+
+  // XP ring
+  const pct = state.level >= CFG.MAX_LEVEL ? 1 :
+    (state.exp - (CFG.EXP_TABLE[state.level] || 0)) /
+    (CFG.EXP_TABLE[state.level + 1] - (CFG.EXP_TABLE[state.level] || 0));
+  const circ = 2 * Math.PI * 20;
+  const offset = circ * (1 - Math.max(0, Math.min(1, pct)));
+  document.getElementById('xp-arc').setAttribute('stroke-dashoffset', offset.toFixed(2));
+
+  // HP color
+  const pill = document.getElementById('hp-pill');
+  pill.className = 'stat-pill ' + (state.stamina > 50 ? 'hp-green' : state.stamina > 20 ? 'hp-yellow' : 'hp-red');
+  updateStaminaTimer();
+}
+
+function renderOrders() {
+  const el = document.getElementById('orders');
+  el.innerHTML = '';
+  for (const ord of state.orders) {
+    el.appendChild(buildOrderCard(ord, false));
+  }
+  // timed order slot
+  if (state.timedOrderEnabled && state.timedOrder) {
+    el.appendChild(buildTimedOrderCard(state.timedOrder));
+  }
+}
+
+function getItemInfo(itype, level) {
+  if (itype === 'shrub') return CFG.SHRUBS[level];
+  if (itype === 'fruit') return CFG.FRUITS[level];
+  return CFG.FLOWERS[level];
+}
+
+function buildOrderCard(ord, isTimed) {
+  const card = document.createElement('div');
+  card.className = 'order-card ' + ord.status;
+  const dRow = document.createElement('div');
+  dRow.className = 'order-demands';
+  for (const d of ord.demands) {
+    const f = getItemInfo(d.itype || 'flower', d.level);
+    const wrap = document.createElement('div'); wrap.className = 'demand-item';
+    const ic = document.createElement('div');
+    const boardCount = state.cells.filter(c => c && c.type === (d.itype||'flower') && c.level === d.level).length;
+    ic.className = 'demand-icon ' + (boardCount >= d.count ? 'met' : 'unmet');
+    ic.style.background = `linear-gradient(135deg,var(--${f.cls}a,#ccc),var(--${f.cls}b,#aaa))`;
+    ic.style.color = '#fff';
+    ic.textContent = f.emoji;
+    const cnt = document.createElement('span'); cnt.className = 'demand-count'; cnt.textContent = `×${d.count}`;
+    wrap.appendChild(ic); wrap.appendChild(cnt); dRow.appendChild(wrap);
+  }
+  card.appendChild(dRow);
+  const rwd = document.createElement('div'); rwd.className = 'order-reward';
+  rwd.textContent = `🪙${ord.gold} ⭐${ord.exp}`;
+  card.appendChild(rwd);
+  const btn = document.createElement('button');
+  btn.className = 'order-btn ' + ord.status;
+  if (ord.status === 'pending') btn.textContent = '需求中';
+  else if (ord.status === 'ready') { btn.textContent = '✅ 完成'; btn.onclick = () => completeOrder(ord.slot); }
+  else { btn.textContent = '刷新中…'; }
+  card.appendChild(btn);
+  return card;
+}
+
+function buildTimedOrderCard(to) {
+  const card = document.createElement('div');
+  card.className = 'order-card timed' + (to.status === 'ready' ? '-ready' : to.status === 'expired' ? '-expired' : '');
+  const lbl = document.createElement('span'); lbl.className = 'timed-label'; lbl.textContent = '限时'; card.appendChild(lbl);
+  const cd = document.createElement('div');
+  cd.className = 'timed-countdown' + (to.remaining < 120 ? ' urgent' : '');
+  const m = Math.floor(to.remaining / 60), s = to.remaining % 60;
+  cd.textContent = `⏱ ${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}`;
+  card.appendChild(cd);
+  const dRow = document.createElement('div'); dRow.className = 'order-demands';
+  for (const d of to.demands) {
+    const f = getItemInfo(d.itype || 'flower', d.level);
+    const wrap = document.createElement('div'); wrap.className = 'demand-item';
+    const ic = document.createElement('div');
+    const bc = state.cells.filter(c => c && c.type === (d.itype||'flower') && c.level === d.level).length;
+    ic.className = 'demand-icon ' + (bc >= d.count ? 'met' : 'unmet');
+    ic.style.background = `linear-gradient(135deg,var(--${f.cls}a,#ccc),var(--${f.cls}b,#aaa))`;
+    ic.style.color = '#fff'; ic.textContent = f.emoji;
+    const cnt = document.createElement('span'); cnt.className = 'demand-count'; cnt.textContent = `×${d.count}`;
+    wrap.appendChild(ic); wrap.appendChild(cnt); dRow.appendChild(wrap);
+  }
+  card.appendChild(dRow);
+  const mul = document.createElement('div'); mul.className = 'timed-multi';
+  mul.textContent = `🪙${to.gold} ⭐${to.exp} ×1.5`;
+  card.appendChild(mul);
+  const btn = document.createElement('button'); btn.className = 'order-btn';
+  if (to.status === 'expired') { btn.textContent = '已超时'; btn.className += ' completed'; }
+  else if (to.status === 'ready') { btn.textContent = '限时完成'; btn.className += ' ready'; btn.onclick = completeTimedOrder; }
+  else { btn.textContent = '限时中'; btn.className += ' pending'; }
+  card.appendChild(btn);
+  return card;
+}
+
+function renderBoard() {
+  const el = document.getElementById('board');
+  el.innerHTML = '';
+  for (let i = 0; i < CFG.ROWS * CFG.COLS; i++) {
     const cell = document.createElement('div');
     cell.className = 'cell';
     cell.dataset.idx = i;
-    const item = state.board[i];
-    if(item){
-      const fl = FLOWERS[item.level-1];
-      const div = document.createElement('div');
-      div.className = 'item' + (item.level === MAX_LEVEL ? ' max-level' : '') + (item._new ? ' merge-flash' : '');
-      div.dataset.cell = i;
-      div.innerHTML = `${fl.icon}<span class="item-lv">Lv${item.level}</span>`;
-      div.title = fl.name;
-      if(item._new) { delete item._new; setTimeout(()=>div.classList.remove('merge-flash'),450); }
-
-      // pointer events for drag
-      div.addEventListener('pointerdown', e => onPointerDown(e, i));
-      cell.appendChild(div);
+    const item = state.cells[i];
+    if (item) {
+      cell.classList.add('has-item');
+      cell.appendChild(makeItemEl(item));
     }
-    // drop events on cell
-    cell.addEventListener('pointerenter', e => onCellEnter(e, i));
-    cell.addEventListener('pointerup',    e => onPointerUp(e, i));
-    boardEl.appendChild(cell);
+    el.appendChild(cell);
   }
+  attachBoardEvents();
+  checkOrders();
 }
 
-function renderOrders(){
-  const ordersEl = document.getElementById('orders');
-  ordersEl.innerHTML = '';
-  state.orders.forEach((o,i)=>{
-    const fl = FLOWERS[o.needLevel-1];
-    const div = document.createElement('div');
-    div.className = 'order-slot' + (o.done ? ' done' : '');
-    div.dataset.order = i;
-    div.innerHTML = `
-      <div class="order-demand">${fl.icon}</div>
-      <div class="order-need">${fl.name}<br>Lv${o.needLevel}</div>
-      <div class="order-progress">${o.done?'✅ 完成':o.submitted>0?`${o.submitted}/${o.total}`:`需要×${o.total}`}</div>
-      <div class="order-reward">🪙${o.gold} ✨${o.exp}</div>
-    `;
-    if(!o.done){
-      div.addEventListener('pointerup', e => onOrderDrop(e, i));
-      div.addEventListener('pointerenter', e => {
-        if(dragState) div.classList.add('drop-target');
-      });
-      div.addEventListener('pointerleave', () => div.classList.remove('drop-target'));
-    }
-    ordersEl.appendChild(div);
-  });
+function makeItemEl(item) {
+  const el = document.createElement('div');
+  const addLv = (n) => { const lv = document.createElement('span'); lv.className = 'item-lv'; lv.textContent = n; el.appendChild(lv); };
+  const addMax = () => { const mx = document.createElement('span'); mx.className = 'item-max'; mx.textContent = 'MAX'; el.appendChild(mx); };
+  const addLbl = (t) => { const lb = document.createElement('span'); lb.className = 'item-label'; lb.textContent = t; el.appendChild(lb); };
+  if (item.type === 'flower') {
+    const f = CFG.FLOWERS[item.level];
+    el.className = 'item ' + f.cls; el.textContent = f.emoji; addLv(item.level);
+    if (item.level >= CFG.MAX_FLOWER) addMax();
+  } else if (item.type === 'shrub') {
+    const f = CFG.SHRUBS[item.level];
+    el.className = 'item ' + f.cls; el.textContent = f.emoji; addLv(item.level);
+    if (item.level >= CFG.MAX_SHRUB) addMax(); addLbl('灌木');
+  } else if (item.type === 'fruit') {
+    const f = CFG.FRUITS[item.level];
+    el.className = 'item ' + f.cls; el.textContent = f.emoji; addLv(item.level);
+    if (item.level >= CFG.MAX_FRUIT) addMax(); addLbl('果树');
+  } else if (item.type === 'shrubbed') {
+    el.className = 'item ' + CFG.SHRUB_BED.cls; el.textContent = CFG.SHRUB_BED.emoji; addLv(item.level); addLbl('灌木圃');
+  } else if (item.type === 'fruitbed') {
+    el.className = 'item ' + CFG.FRUIT_BED.cls; el.textContent = CFG.FRUIT_BED.emoji; addLv(item.level); addLbl('果树圃');
+  } else {
+    const fb = CFG.FLOWERBEDS[item.level];
+    el.className = 'item fb'; el.textContent = fb.emoji; addLv(item.level); addLbl('花圃');
+  }
+  el.dataset.itemId = item.id;
+  return el;
 }
 
-function renderExp(){
-  const levels = [0,20,50,100,200];
-  const lv = state.playerLevel;
-  const cur = lv < 5 ? state.exp : 200;
-  const need = lv < 5 ? levels[lv] : 200;
-  const pct = Math.min(100, (cur/need*100)).toFixed(1);
-  document.getElementById('exp-fill').style.width = pct + '%';
-  document.getElementById('exp-text').textContent = `${cur} / ${need}`;
+// ─────────────────── DRAG & DROP ───────────────────
+let dragState = null;
+
+function attachBoardEvents() {
+  // no-op: events attached once after DOM ready
 }
 
-/* ============================================================
-   DRAG & DROP (pointer events)
-============================================================ */
-let ghostEl = null;
-
-function onPointerDown(e, cellIdx){
-  if(!state.board[cellIdx]) return;
-  e.preventDefault();
-  dragState = {fromCell: cellIdx};
-  // mark dragging
-  const itemEl = e.currentTarget;
-  itemEl.classList.add('dragging');
-  // create ghost
-  ghostEl = itemEl.cloneNode(true);
-  ghostEl.classList.remove('dragging');
-  ghostEl.style.cssText = `
-    position:fixed;z-index:999;pointer-events:none;opacity:.85;
-    width:${itemEl.offsetWidth}px;height:${itemEl.offsetHeight}px;
-    transition:none;transform:scale(1.15);
-  `;
-  document.body.appendChild(ghostEl);
-  moveGhost(e);
-  document.addEventListener('pointermove', onPointerMove);
-  document.addEventListener('pointerup',   onPointerUpGlobal);
+function getCoords(e) {
+  if (e.touches) return { x: e.touches[0].clientX, y: e.touches[0].clientY };
+  return { x: e.clientX, y: e.clientY };
 }
 
-function onPointerMove(e){
-  if(!dragState) return;
-  moveGhost(e);
-}
-function moveGhost(e){
-  if(!ghostEl) return;
-  const x = (e.clientX || e.touches?.[0]?.clientX || 0);
-  const y = (e.clientY || e.touches?.[0]?.clientY || 0);
-  ghostEl.style.left = (x - ghostEl.offsetWidth/2) + 'px';
-  ghostEl.style.top  = (y - ghostEl.offsetHeight/2) + 'px';
+function cellAtPoint(x, y) {
+  const el = document.elementFromPoint(x, y);
+  const cell = el?.closest('.cell');
+  return cell ? parseInt(cell.dataset.idx) : -1;
 }
 
-function onCellEnter(e, cellIdx){
-  if(!dragState) return;
-  document.querySelectorAll('.cell').forEach(c=>c.classList.remove('drag-over'));
-  const cellEl = document.querySelector(`.cell[data-idx="${cellIdx}"]`);
-  if(cellEl) cellEl.classList.add('drag-over');
-}
-
-function onPointerUp(e, cellIdx){
-  if(!dragState) return;
-  e.preventDefault();
-  const from = dragState.fromCell;
-  endDrag();
-  if(from === cellIdx){
-    // tapped in place — no-op
+function onDragStart(e) {
+  const cell = e.target.closest('.cell');
+  if (!cell) return;
+  const idx = parseInt(cell.dataset.idx);
+  const item = state.cells[idx];
+  if (!item) {
+    // tap on flowerbed = produce
     return;
   }
-  const target = state.board[cellIdx];
-  if(target){
-    tryMerge(from, cellIdx);
+  if (e.cancelable) e.preventDefault();
+
+  // Check if it's a flowerbed click (short tap vs drag)
+  const isBed = ['flowerbed','shrubbed','fruitbed'].includes(item.type);
+  if (isBed) {
+    dragState = { fromIdx: idx, item, isFbTap: true, moved: false, startCoords: getCoords(e) };
   } else {
-    // move to empty cell
-    state.board[cellIdx] = state.board[from];
-    state.board[from] = null;
-    render();
+    dragState = { fromIdx: idx, item, moved: false, startCoords: getCoords(e) };
+  }
+
+  cell.classList.add('dragging-src');
+
+  const ghost = document.getElementById('drag-ghost');
+  ghost.innerHTML = '';
+  ghost.appendChild(makeItemEl(item));
+  ghost.style.display = 'block';
+  const { x, y } = getCoords(e);
+  ghost.style.left = x + 'px';
+  ghost.style.top = y + 'px';
+}
+
+function onDragMove(e) {
+  if (!dragState) return;
+  if (e.cancelable) e.preventDefault();
+  const { x, y } = getCoords(e);
+  const dx = x - dragState.startCoords.x, dy = y - dragState.startCoords.y;
+  if (!dragState.moved && Math.sqrt(dx*dx + dy*dy) > 8) dragState.moved = true;
+
+  const ghost = document.getElementById('drag-ghost');
+  ghost.style.left = x + 'px';
+  ghost.style.top = y + 'px';
+
+  // highlight drop target
+  document.querySelectorAll('.cell.drag-over').forEach(c => c.classList.remove('drag-over'));
+  const over = cellAtPoint(x, y);
+  if (over >= 0 && over !== dragState.fromIdx) {
+    document.querySelector(`.cell[data-idx="${over}"]`)?.classList.add('drag-over');
   }
 }
 
-function onOrderDrop(e, orderIdx){
-  if(!dragState) return;
-  e.preventDefault();
-  e.stopPropagation();
-  const from = dragState.fromCell;
-  endDrag();
-  submitToOrder(orderIdx, from);
-}
+function onDragEnd(e) {
+  if (!dragState) return;
+  const ghost = document.getElementById('drag-ghost');
+  ghost.style.display = 'none';
+  document.querySelectorAll('.cell.drag-over').forEach(c => c.classList.remove('drag-over'));
+  document.querySelectorAll('.cell.dragging-src').forEach(c => c.classList.remove('dragging-src'));
 
-function onPointerUpGlobal(e){
-  if(!dragState) return;
-  endDrag();
-}
+  const { x, y } = e.changedTouches ? { x: e.changedTouches[0].clientX, y: e.changedTouches[0].clientY } : { x: e.clientX, y: e.clientY };
+  const toIdx = cellAtPoint(x, y);
 
-function endDrag(){
-  if(ghostEl){ ghostEl.remove(); ghostEl = null; }
-  document.querySelectorAll('.cell').forEach(c=>c.classList.remove('drag-over'));
-  document.querySelectorAll('.order-slot').forEach(c=>c.classList.remove('drop-target'));
-  document.querySelectorAll('.item.dragging').forEach(c=>c.classList.remove('dragging'));
-  document.removeEventListener('pointermove', onPointerMove);
-  document.removeEventListener('pointerup',   onPointerUpGlobal);
+  if (!dragState.moved) {
+    // tap
+    if (['flowerbed','shrubbed','fruitbed'].includes(dragState.item.type)) {
+      onFlowerbedTap(dragState.fromIdx);
+    }
+  } else {
+    // drag end
+    if (toIdx >= 0 && toIdx !== dragState.fromIdx) {
+      handleDrop(dragState.fromIdx, toIdx);
+    }
+  }
   dragState = null;
 }
 
-/* ============================================================
-   TOAST / FLOAT / MODAL
-============================================================ */
-let toastTO = null;
-function showToast(msg){
+function handleDrop(fromIdx, toIdx) {
+  const src = state.cells[fromIdx];
+  const dst = state.cells[toIdx];
+  if (!src) return;
+  if (!dst) {
+    state.cells[toIdx] = src; state.cells[fromIdx] = null;
+    renderBoard(); saveState(); return;
+  }
+  if (src.type === dst.type && src.level === dst.level) {
+    const maxMap = { flower: CFG.MAX_FLOWER, shrub: CFG.MAX_SHRUB, fruit: CFG.MAX_FRUIT, flowerbed: CFG.MAX_FLOWERBED };
+    const maxLv = maxMap[src.type] || 5;
+    if (src.level >= maxLv) { showToast('已是最高等级，无法继续合成'); return; }
+    state.cells[fromIdx] = null;
+    state.cells[toIdx] = mkItem(src.type, src.level + 1);
+    playSound('merge');
+    renderBoard();
+    const mergedCell = document.querySelector(`.cell[data-idx="${toIdx}"]`);
+    if (mergedCell) { const it = mergedCell.querySelector('.item'); if (it) it.classList.add('merge-anim'); }
+    const nameMap = { flower: CFG.FLOWERS, shrub: CFG.SHRUBS, fruit: CFG.FRUITS };
+    const nm = nameMap[src.type] ? nameMap[src.type][src.level+1].name : 'Lv.'+(src.level+1)+'花圃';
+    showToast('✨ 合成成功！' + nm);
+    checkOrders(); saveState();
+  } else {
+    showToast('需要相同等级和类型才能合成');
+    shakeCell(fromIdx);
+  }
+}
+
+function onFlowerbedTap(idx) {
+  if (state.stamina < CFG.STAMINA_COST) {
+    showToast('体力不足，休息一下再来照顾花圃吧 💤');
+    document.getElementById('hp-pill').classList.add('stamina-shake');
+    setTimeout(() => document.getElementById('hp-pill').classList.remove('stamina-shake'), 400);
+    return;
+  }
+  const fb = state.cells[idx];
+  if (!fb) return;
+  // P1 验收规则：从全盘空格随机选择，不再限制花圃周围
+  const allEmpty = state.cells.map((c,i) => c === null ? i : -1).filter(i => i >= 0);
+  if (!allEmpty.length) {
+    showToast('合成盘已满，先合成或移动物品腾出位置吧');
+    return;
+  }
+  // 成功产出后才扣体力
+  state.stamina -= CFG.STAMINA_COST;
+  state.lastRecovery = Date.now();
+  const target = allEmpty[Math.floor(Math.random() * allEmpty.length)];
+  let produceType = 'flower', produceLevel = 1;
+  if (fb.type === 'shrubbed') { produceType = 'shrub'; produceLevel = 1; }
+  else if (fb.type === 'fruitbed') { produceType = 'fruit'; produceLevel = 1; }
+  else { produceLevel = CFG.FLOWERBEDS[fb.level].produces; }
+  state.cells[target] = mkItem(produceType, produceLevel);
+  playSound('produce');
+  renderBoard(); renderTopBar(); checkOrders(); saveState();
+  // 高亮产出格子，帮助玩家找到新物品位置
+  const tcell = document.querySelector(`.cell[data-idx="${target}"]`);
+  if (tcell) {
+    tcell.style.outline = '2px solid var(--gd)';
+    setTimeout(() => tcell.style.outline = '', 800);
+    const it = tcell.querySelector('.item'); if (it) it.classList.add('merge-anim');
+  }
+}
+
+function getNeighbors(idx) {
+  const row = Math.floor(idx / CFG.COLS), col = idx % CFG.COLS;
+  const dirs = [[-1,-1],[-1,0],[-1,1],[0,-1],[0,1],[1,-1],[1,0],[1,1]];
+  return dirs
+    .map(([dr,dc]) => [row+dr, col+dc])
+    .filter(([r,c]) => r>=0 && r<CFG.ROWS && c>=0 && c<CFG.COLS)
+    .map(([r,c]) => r*CFG.COLS+c);
+}
+
+function shakeCell(idx) {
+  const cell = document.querySelector(`.cell[data-idx="${idx}"]`);
+  if (!cell) return;
+  cell.style.animation = 'none';
+  cell.offsetHeight;
+  cell.style.animation = 'staminaShake .3s';
+  setTimeout(() => cell.style.animation = '', 400);
+}
+
+// ─────────────────── UI HELPERS ───────────────────
+let toastTimer = null;
+function showToast(msg, dur = 2000) {
   const el = document.getElementById('toast');
   el.textContent = msg;
   el.classList.add('show');
-  clearTimeout(toastTO);
-  toastTO = setTimeout(()=>el.classList.remove('show'), 2200);
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => el.classList.remove('show'), dur);
 }
 
-function showFloatText(msg){
-  const el = document.createElement('div');
-  el.className = 'float-text';
-  el.textContent = msg;
-  el.style.left = (window.innerWidth/2 - 60) + 'px';
-  el.style.top  = (window.innerHeight/2 - 40) + 'px';
-  document.body.appendChild(el);
-  setTimeout(()=>el.remove(), 950);
-}
-
-let modalCloseCallback = null;
-function showModal(title, rewards, msg, cb){
+function showModal(title, body, btnText = '知道啦', cb = null) {
   document.getElementById('modal-title').textContent = title;
-  document.getElementById('modal-rewards').textContent = rewards;
-  document.getElementById('modal-msg').textContent = msg;
-  document.getElementById('modal-mask').classList.add('show');
-  modalCloseCallback = cb || null;
-}
-function closeModal(){
-  document.getElementById('modal-mask').classList.remove('show');
-  if(modalCloseCallback){ modalCloseCallback(); modalCloseCallback=null; }
+  document.getElementById('modal-body').innerHTML = body;
+  document.getElementById('modal-btn').textContent = btnText;
+  document.getElementById('modal-wrap').classList.add('show');
+  document.getElementById('modal-btn').onclick = () => {
+    document.getElementById('modal-wrap').classList.remove('show');
+    if (cb) cb();
+  };
 }
 
-/* ============================================================
-   START
-============================================================ */
+function showLevelUpModal(newLevel) {
+  const modal = document.getElementById('modal');
+  modal.id = 'levelup-modal';
+  // Check if a zone unlocks at this level
+  const newZone = CFG.ZONES.find(z => z.unlockLevel === newLevel);
+  let extraMsg = '';
+  if (newZone) extraMsg = `<br><br>🌷 新区域解锁：<strong>${newZone.name}</strong>！快去花园看看吧`;
+  showModal(
+    `🎉 升级啦！`,
+    `Lv.${newLevel - 1} → <strong>Lv.${newLevel}</strong><br><br>体力已回满！继续加油吧 🌸${extraMsg}`,
+    '知道啦',
+    () => { modal.id = 'modal'; renderTopBar(); updateGardenBadge(); }
+  );
+}
+
+function showGoldFloat(text) {
+  const el = document.createElement('div');
+  el.className = 'gold-float';
+  el.textContent = text;
+  const ordersEl = document.getElementById('orders');
+  const rect = ordersEl.getBoundingClientRect();
+  el.style.left = (rect.left + rect.width / 2 - 30) + 'px';
+  el.style.top = (rect.top + rect.height / 2) + 'px';
+  document.body.appendChild(el);
+  setTimeout(() => el.remove(), 1000);
+}
+
+function playSound(type) {
+  try {
+    const ctx = new (window.AudioContext || window.webkitAudioContext)();
+    const osc = ctx.createOscillator();
+    const gain = ctx.createGain();
+    osc.connect(gain); gain.connect(ctx.destination);
+    if (type === 'merge') {
+      osc.frequency.setValueAtTime(523, ctx.currentTime);
+      osc.frequency.setValueAtTime(659, ctx.currentTime + 0.1);
+      osc.frequency.setValueAtTime(784, ctx.currentTime + 0.2);
+      gain.gain.setValueAtTime(0.3, ctx.currentTime);
+      gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.4);
+      osc.start(); osc.stop(ctx.currentTime + 0.4);
+    } else if (type === 'order') {
+      osc.frequency.setValueAtTime(659, ctx.currentTime);
+      osc.frequency.setValueAtTime(784, ctx.currentTime + 0.1);
+      osc.frequency.setValueAtTime(1047, ctx.currentTime + 0.2);
+      gain.gain.setValueAtTime(0.25, ctx.currentTime);
+      gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.5);
+      osc.start(); osc.stop(ctx.currentTime + 0.5);
+    } else if (type === 'produce') {
+      osc.frequency.setValueAtTime(440, ctx.currentTime);
+      osc.frequency.setValueAtTime(550, ctx.currentTime + 0.08);
+      gain.gain.setValueAtTime(0.2, ctx.currentTime);
+      gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.25);
+      osc.start(); osc.stop(ctx.currentTime + 0.25);
+    }
+  } catch(e) {}
+}
+
+// ─────────────────── START ───────────────────
+function setupBoardEvents() {
+  const board = document.getElementById('board');
+  board.addEventListener('mousedown', onDragStart);
+  board.addEventListener('touchstart', onDragStart, { passive: false });
+  document.addEventListener('mousemove', onDragMove);
+  document.addEventListener('touchmove', onDragMove, { passive: false });
+  document.addEventListener('mouseup', onDragEnd);
+  document.addEventListener('touchend', onDragEnd);
+}
+
+// ─────────────────── TAB SWITCH ───────────────────
+function switchTab(tab) {
+  document.getElementById('nav-merge').classList.toggle('active', tab === 'merge');
+  document.getElementById('nav-garden').classList.toggle('active', tab === 'garden');
+  if (tab === 'garden') {
+    document.getElementById('garden-gold-text').textContent = state.gold.toLocaleString();
+    openGardenOverlay();
+  } else {
+    document.getElementById('garden-overlay').classList.remove('show');
+  }
+}
+
+// ─────────────────── GARDEN SYSTEM ───────────────────
+let gardenView = 'zones'; // 'zones' | 'tiles' | 'detail'
+let gardenCurrentZone = null;
+let gardenCurrentTile = null;
+
+function openGardenOverlay() {
+  document.getElementById('garden-overlay').classList.add('show');
+  gardenView = 'zones';
+  gardenCurrentZone = null;
+  gardenCurrentTile = null;
+  renderGarden();
+  document.getElementById('garden-back-btn').onclick = gardenBack;
+}
+
+function gardenBack() {
+  if (gardenView === 'detail') { gardenView = 'tiles'; renderGarden(); }
+  else if (gardenView === 'tiles') { gardenView = 'zones'; gardenCurrentZone = null; renderGarden(); }
+  else { switchTab('merge'); }
+}
+
+function renderGarden() {
+  const content = document.getElementById('garden-content');
+  content.innerHTML = '';
+  document.getElementById('garden-gold-text').textContent = state.gold.toLocaleString();
+  if (gardenView === 'zones') {
+    document.getElementById('garden-title').textContent = '我的花园';
+    renderZoneOverview(content);
+  } else if (gardenView === 'tiles') {
+    const zone = CFG.ZONES.find(z => z.id === gardenCurrentZone);
+    document.getElementById('garden-title').textContent = zone ? zone.name : '区域';
+    renderTileList(content, zone);
+  } else {
+    const zone = CFG.ZONES.find(z => z.id === gardenCurrentZone);
+    const tileCfg = CFG.TILES[gardenCurrentTile];
+    document.getElementById('garden-title').textContent = tileCfg ? tileCfg.name : '地块';
+    renderTileDetail(content, gardenCurrentTile);
+  }
+}
+
+function getZoneProgress(zone) {
+  let done = 0, total = 0;
+  for (const tid of zone.tiles) {
+    const tc = CFG.TILES[tid];
+    if (!tc) continue;
+    total += tc.points.length;
+    const tstate = state.garden.tiles[tid];
+    done += tstate ? tstate.length : 0;
+  }
+  return { done, total };
+}
+
+function getTileProgress(tid) {
+  const tc = CFG.TILES[tid];
+  if (!tc) return { done: 0, total: 0 };
+  const done = (state.garden.tiles[tid] || []).length;
+  return { done, total: tc.points.length };
+}
+
+function isTileDone(tid) {
+  const tc = CFG.TILES[tid];
+  if (!tc) return false;
+  return (state.garden.tiles[tid] || []).length >= tc.points.length;
+}
+
+function renderZoneOverview(content) {
+  const wrap = document.createElement('div');
+  wrap.id = 'zone-overview';
+  wrap.style.cssText = 'flex:1;position:relative;overflow:hidden;background:linear-gradient(180deg,#c8efff 0%,#d6f1c3 52%,#efce94 100%)';
+
+  // 岛屿底图
+  const island = document.createElement('div');
+  island.style.cssText = 'position:absolute;inset:28px 22px 60px;border-radius:48% 52% 40% 42%;background:linear-gradient(145deg,#c9eda8,#8fd195);box-shadow:inset -15px -20px 25px #58946735';
+  wrap.appendChild(island);
+
+  // 道路
+  [{s:'left:calc(50% - 22px);bottom:60px;width:44px;height:34%;border-radius:999px'},
+   {s:'left:calc(50% - 22px);top:7%;width:44px;height:28%;border-radius:999px'},
+   {s:'left:20%;top:40%;width:44px;height:19%;border-radius:999px;transform:rotate(57deg)'},
+   {s:'right:20%;top:40%;width:44px;height:19%;border-radius:999px;transform:rotate(-57deg)'}
+  ].forEach(r=>{
+    const d=document.createElement('div');
+    d.style.cssText=r.s+';position:absolute;background:#f4d49a;border:2px solid #fff2bd;z-index:2';
+    wrap.appendChild(d);
+  });
+
+  // 许愿树
+  const tree=document.createElement('div');
+  tree.style.cssText='position:absolute;left:calc(50% - 40px);top:37%;width:80px;height:80px;border-radius:50%;background:radial-gradient(circle,#fffbd0 0 34%,#d8b5ed 36% 48%,#fff 50%);z-index:5;display:grid;place-items:center;font-size:34px;box-shadow:0 0 22px #fff6a880';
+  tree.textContent='🌳';
+  wrap.appendChild(tree);
+
+  // 大门
+  const gate=document.createElement('div');
+  gate.style.cssText='position:absolute;bottom:60px;left:calc(50% - 18px);font-size:28px;z-index:7';
+  gate.textContent='🏰';
+  wrap.appendChild(gate);
+
+  // 区域定义
+  const zoneDefs=[
+    {id:'Z01',label:'入口空地',color:'#bee29c',st:'left:calc(50% - 88px);bottom:14%;width:176px;height:158px;border-radius:50%'},
+    {id:'Z02',label:'花圃区',color:'#f1b7d0',st:'left:5%;top:38%;width:136px;height:156px;border-radius:50%'},
+    {id:'Z03',label:'果树区',color:'#b9dc88',st:'right:5%;top:40%;width:134px;height:150px;border-radius:50%'},
+    {id:'Z04',label:'水景区',color:'#a7dfdf',st:'right:7%;top:20%;width:146px;height:128px;border-radius:50%'},
+    {id:'Z05',label:'星光花廊',color:'#c0afea',st:'left:calc(50% - 86px);top:4%;width:172px;height:114px;border-radius:50%'},
+  ];
+
+  zoneDefs.forEach(zd=>{
+    const zone=CFG.ZONES.find(z=>z.id===zd.id);
+    if(!zone) return;
+    const locked=state.level<zone.unlockLevel;
+    const prog=getZoneProgress(zone);
+    const pct=prog.total>0?prog.done/prog.total:0;
+
+    const el=document.createElement('div');
+    el.style.cssText=zd.st+';position:absolute;z-index:4;border:2px solid #ffffffcc;box-shadow:0 8px 18px #4e574626;transition:transform .15s,filter .15s;cursor:'+(locked?'default':'pointer');
+    el.style.background=locked?'#b8b8b8':zd.color;
+    if(locked){el.style.opacity='0.42';el.style.filter='grayscale(0.5)';}
+
+    if(!locked){
+      el.onmouseenter=()=>{el.style.transform='translateY(-3px)';el.style.filter='brightness(1.08)';};
+      el.onmouseleave=()=>{el.style.transform='';el.style.filter='';};
+      el.onclick=()=>{gardenCurrentZone=zd.id;gardenView='tiles';renderGarden();};
+    }
+
+    const lbl=document.createElement('div');
+    lbl.style.cssText='position:absolute;left:50%;top:7px;transform:translateX(-50%);white-space:nowrap;padding:2px 7px;border-radius:999px;background:#ffffffd9;font-size:9px;font-weight:900;color:#3a2d4a';
+    lbl.textContent=locked?'🔒 Lv.'+zone.unlockLevel:zd.label;
+    el.appendChild(lbl);
+
+    if(!locked){
+      // 进度圆环
+      const svgNS='http://www.w3.org/2000/svg';
+      const svg=document.createElementNS(svgNS,'svg');
+      svg.setAttribute('viewBox','0 0 36 36');
+      svg.style.cssText='position:absolute;inset:18%;pointer-events:none;opacity:0.4';
+      const bg=document.createElementNS(svgNS,'circle');
+      bg.setAttribute('cx','18');bg.setAttribute('cy','18');bg.setAttribute('r','15');
+      bg.setAttribute('fill','none');bg.setAttribute('stroke','#fff');bg.setAttribute('stroke-width','2.5');
+      const fg=document.createElementNS(svgNS,'circle');
+      fg.setAttribute('cx','18');fg.setAttribute('cy','18');fg.setAttribute('r','15');
+      fg.setAttribute('fill','none');fg.setAttribute('stroke','#f2c562');fg.setAttribute('stroke-width','2.5');
+      const circ=(2*Math.PI*15).toFixed(1);
+      fg.setAttribute('stroke-dasharray',circ);
+      fg.setAttribute('stroke-dashoffset',(2*Math.PI*15*(1-pct)).toFixed(1));
+      fg.setAttribute('transform','rotate(-90 18 18)');
+      svg.appendChild(bg);svg.appendChild(fg);
+      el.appendChild(svg);
+
+      const p=document.createElement('div');
+      p.style.cssText='position:absolute;bottom:8px;left:50%;transform:translateX(-50%);font-size:8px;font-weight:700;color:#3a2d4a;background:#ffffffcc;padding:2px 6px;border-radius:999px;white-space:nowrap';
+      p.textContent=pct>=1?'✨全完成':prog.done+'/'+prog.total;
+      el.appendChild(p);
+    }
+    wrap.appendChild(el);
+  });
+
+  // 底部总进度条
+  const totalDone=CFG.ZONES.reduce((s,z)=>s+getZoneProgress(z).done,0);
+  const totalAll =CFG.ZONES.reduce((s,z)=>s+getZoneProgress(z).total,0);
+  const footer=document.createElement('div');
+  footer.style.cssText='position:absolute;bottom:0;left:0;right:0;height:48px;padding:6px 12px;background:#ffffffcc;border-top:1px solid #d0eec0;z-index:20;display:flex;align-items:center;gap:8px';
+  const bw=document.createElement('div');
+  bw.style.cssText='flex:1;height:6px;border-radius:3px;background:#d0eec0;overflow:hidden';
+  const bf=document.createElement('div');
+  bf.style.cssText='height:100%;border-radius:3px;background:linear-gradient(90deg,#90c060,#40a010);transition:.4s';
+  bf.style.width=totalAll>0?(totalDone/totalAll*100).toFixed(0)+'%':'0%';
+  bw.appendChild(bf);
+  const bt=document.createElement('span');
+  bt.style.cssText='font-size:10px;font-weight:700;color:#3a2d4a;white-space:nowrap';
+  bt.textContent='花园进度 '+totalDone+'/'+totalAll;
+  footer.appendChild(bw);footer.appendChild(bt);
+  wrap.appendChild(footer);
+
+  content.appendChild(wrap);
+}
+
+function renderTileList(content, zone) {
+  if (!zone) return;
+  const grid = document.createElement('div'); grid.className = 'tile-list';
+  for (const tid of zone.tiles) {
+    const tc = CFG.TILES[tid];
+    if (!tc) continue;
+    const prog = getTileProgress(tid);
+    const done = isTileDone(tid);
+    const inProg = prog.done > 0 && !done;
+    const card = document.createElement('div');
+    card.className = 'tile-card ' + (done ? 'done' : inProg ? 'in-progress' : 'wrecked');
+    card.onclick = () => { gardenCurrentTile = tid; gardenView = 'detail'; renderGarden(); };
+    const ico = document.createElement('div'); ico.className = 'tile-card-icon';
+    ico.textContent = done ? '✅' : inProg ? '🔨' : '🌾';
+    const nm = document.createElement('div'); nm.className = 'tile-card-name'; nm.textContent = tc.name;
+    const st = document.createElement('div'); st.className = 'tile-card-status';
+    st.textContent = done ? '已完成' : `${prog.done}/${prog.total} 点`;
+    card.appendChild(ico); card.appendChild(nm); card.appendChild(st);
+    grid.appendChild(card);
+  }
+  content.appendChild(grid);
+}
+
+function getCurrentPointIdx(tid) {
+  const tc = CFG.TILES[tid];
+  if (!tc) return -1;
+  const done = state.garden.tiles[tid] || [];
+  for (let i = 0; i < tc.points.length; i++) {
+    if (!done.includes(tc.points[i].id)) return i;
+  }
+  return -1; // all done
+}
+
+function renderTileDetail(content, tid) {
+  const tc = CFG.TILES[tid];
+  if (!tc) return;
+  const done = state.garden.tiles[tid] || [];
+  const currentIdx = getCurrentPointIdx(tid);
+
+  // 布局：上方地图视口 + 下方操作面板
+  const outer = document.createElement('div');
+  outer.style.cssText = 'flex:1;display:flex;flex-direction:column;overflow:hidden';
+
+  // ── 地图视口 ──
+  const viewportH = 320;
+  const mapW = 700, mapH = 1050; // 地图约为视口 2.5 倍
+  const viewport = document.createElement('div');
+  viewport.style.cssText = 'position:relative;height:'+viewportH+'px;overflow:hidden;background:linear-gradient(145deg,#cfe9ad,#8dcc91);touch-action:none;cursor:grab;flex-shrink:0';
+
+  // 世界地图容器
+  const world = document.createElement('div');
+  let wx = -Math.floor((mapW - 390)/2), wy = -Math.floor(mapH * 0.4);
+  world.style.cssText = 'position:absolute;width:'+mapW+'px;height:'+mapH+'px;will-change:transform';
+  world.style.transform = 'translate('+wx+'px,'+wy+'px)';
+
+  // 地图背景细节
+  world.innerHTML = '<div style="position:absolute;inset:0;background:radial-gradient(circle at 15% 20%,#f8b7d4 0 3px,transparent 4px),radial-gradient(circle at 72% 28%,#fff0a0 0 3px,transparent 4px),radial-gradient(circle at 45% 70%,#d1a8ec 0 3px,transparent 4px);background-size:48px 51px,65px 60px,57px 66px;opacity:.45"></div>'
+    +'<div style="position:absolute;left:310px;top:40px;width:85px;height:880px;border-radius:50%;background:#f3d39c;transform:rotate(5deg);box-shadow:inset 0 0 0 3px #fff0bf"></div>'
+    +'<div style="position:absolute;left:55px;top:540px;width:220px;height:165px;border-radius:50%;background:#83d7e1;border:8px solid #d8efbd"></div>'
+    +'<div style="position:absolute;right:35px;top:110px;width:190px;height:260px;border-radius:40%;background:#81be73;border:6px solid #aad993"></div>';
+
+  // 建设点位（按配置分布在地图上）
+  const pointPositions = generatePointPositions(tc.points.length, mapW, mapH);
+  tc.points.forEach((pt, i) => {
+    const isDone = done.includes(pt.id);
+    const isActive = i === currentIdx;
+    const pos = pointPositions[i];
+    const dot = document.createElement('div');
+    const bg = isDone ? 'var(--gd)' : isActive ? 'var(--pk)' : '#8f919a';
+    const opacity = (!isDone && !isActive) ? '0.4' : '1';
+    dot.style.cssText = 'position:absolute;width:32px;height:32px;border-radius:50%;background:'+bg+';border:3px solid #fff;display:grid;place-items:center;font-size:14px;box-shadow:0 3px 8px rgba(0,0,0,.25);cursor:pointer;opacity:'+opacity+';transition:.15s;z-index:5';
+    dot.style.left = pos.x + 'px';
+    dot.style.top  = pos.y + 'px';
+    dot.textContent = isDone ? '✅' : isActive ? pt.emoji : '🔒';
+    dot.title = pt.name;
+    if (isActive) {
+      dot.style.animation = 'pulse 1.2s infinite';
+      dot.style.boxShadow = '0 0 0 6px rgba(245,160,192,.35),0 3px 8px rgba(0,0,0,.25)';
+      dot.onclick = () => {
+        const panel = document.getElementById('tile-action-panel');
+        if (panel) panel.scrollIntoView({behavior:'smooth',block:'nearest'});
+      };
+    }
+    // 序号标签
+    const seq = document.createElement('span');
+    seq.style.cssText = 'position:absolute;top:-6px;right:-6px;width:14px;height:14px;border-radius:50%;background:#3a2d4a;color:#fff;font-size:7px;font-weight:900;display:grid;place-items:center';
+    seq.textContent = i+1;
+    dot.appendChild(seq);
+    world.appendChild(dot);
+  });
+
+  viewport.appendChild(world);
+
+  // 拖动逻辑
+  let dragging=false, startX=0, startY=0, startWX=0, startWY=0;
+  const minX=-(mapW-390), maxX=0, minY=-(mapH-viewportH), maxY=0;
+  function clamp(v,mn,mx){return Math.max(mn,Math.min(mx,v));}
+  function applyTranslate(){world.style.transform='translate('+wx+'px,'+wy+'px)';updateMiniView();}
+
+  viewport.addEventListener('pointerdown', e=>{
+    dragging=true; startX=e.clientX; startY=e.clientY; startWX=wx; startWY=wy;
+    viewport.style.cursor='grabbing'; viewport.setPointerCapture(e.pointerId);
+    e.preventDefault();
+  });
+  viewport.addEventListener('pointermove', e=>{
+    if(!dragging) return;
+    wx=clamp(startWX+(e.clientX-startX),minX,maxX);
+    wy=clamp(startWY+(e.clientY-startY),minY,maxY);
+    applyTranslate();
+  });
+  viewport.addEventListener('pointerup', ()=>{dragging=false;viewport.style.cursor='grab';});
+
+  // 小地图
+  const mini = document.createElement('div');
+  mini.style.cssText = 'position:absolute;right:8px;top:8px;width:72px;height:104px;border:2px solid #fff;border-radius:8px;background:#92cc83dd;z-index:15;overflow:hidden';
+  const miniView = document.createElement('div');
+  miniView.id = 'mini-view-'+tid;
+  const vwPct = 390/mapW*100, vhPct = viewportH/mapH*100;
+  miniView.style.cssText = 'position:absolute;border:2px solid #ff5e9a;background:rgba(255,255,255,.25);border-radius:2px;transition:.08s';
+  miniView.style.width = vwPct+'%'; miniView.style.height = vhPct+'%';
+  mini.appendChild(miniView);
+  viewport.appendChild(mini);
+
+  function updateMiniView(){
+    const xPct = (-wx)/mapW*100, yPct = (-wy)/mapH*100;
+    miniView.style.left = xPct+'%'; miniView.style.top = yPct+'%';
+  }
+  updateMiniView();
+
+  // "定位目标"按钮
+  const locateBtn = document.createElement('button');
+  locateBtn.style.cssText = 'position:absolute;left:8px;bottom:8px;z-index:15;border:0;border-radius:20px;padding:5px 10px;background:rgba(255,255,255,.9);font-size:10px;font-weight:700;cursor:pointer;color:#3a2d4a;box-shadow:0 2px 6px rgba(0,0,0,.15)';
+  locateBtn.textContent = '🎯 定位目标';
+  locateBtn.onclick = () => {
+    if (currentIdx < 0) return;
+    const pos = pointPositions[currentIdx];
+    wx = clamp(-pos.x + 390/2 - 16, minX, maxX);
+    wy = clamp(-pos.y + viewportH/2 - 16, minY, maxY);
+    applyTranslate();
+  };
+  viewport.appendChild(locateBtn);
+
+  // 拖动提示
+  const tip = document.createElement('div');
+  tip.style.cssText = 'position:absolute;left:8px;top:8px;z-index:15;padding:4px 8px;border-radius:999px;background:rgba(255,255,255,.85);font-size:9px;color:#6a5a7a;pointer-events:none';
+  tip.textContent = '← 拖动地图查看四周 →';
+  setTimeout(()=>{tip.style.opacity='0';tip.style.transition='opacity .5s';},2500);
+  viewport.appendChild(tip);
+
+  outer.appendChild(viewport);
+
+  // ── 操作面板（底部可滚动） ──
+  const panel = document.createElement('div');
+  panel.id = 'tile-action-panel';
+  panel.style.cssText = 'flex:1;overflow-y:auto;padding:8px 12px;display:flex;flex-direction:column;gap:6px;background:#f8f4ff';
+
+  // 进度行
+  const progRow = document.createElement('div');
+  progRow.style.cssText = 'display:flex;align-items:center;gap:8px;flex-shrink:0';
+  const progBar = document.createElement('div');
+  progBar.style.cssText = 'flex:1;height:5px;border-radius:3px;background:rgba(144,192,96,.2);overflow:hidden';
+  const progFill = document.createElement('div');
+  progFill.style.cssText = 'height:100%;border-radius:3px;background:linear-gradient(90deg,var(--grd-border),#40a010);transition:.4s';
+  progFill.style.width = tc.points.length > 0 ? (done.length/tc.points.length*100).toFixed(0)+'%' : '0%';
+  progBar.appendChild(progFill);
+  const progTxt = document.createElement('span');
+  progTxt.style.cssText = 'font-size:10px;font-weight:700;color:var(--mu);white-space:nowrap';
+  progTxt.textContent = done.length+'/'+tc.points.length+' 点';
+  progRow.appendChild(progBar); progRow.appendChild(progTxt);
+  panel.appendChild(progRow);
+
+  // 点位卡片
+  tc.points.forEach((pt, i) => {
+    const isDone = done.includes(pt.id);
+    const isActive = i === currentIdx;
+    const card = document.createElement('div');
+    card.className = 'point-card' + (isActive?' active-point':isDone?' done-point':' locked-point');
+    const top = document.createElement('div'); top.className = 'point-card-top';
+    const ico = document.createElement('span'); ico.className='point-icon'; ico.textContent=isDone?'✅':isActive?pt.emoji:'🔒';
+    const info = document.createElement('div'); info.className='point-info';
+    const nm = document.createElement('div'); nm.className='point-name'; nm.textContent=pt.name;
+    const badge = document.createElement('span');
+    badge.className='point-type-badge '+(pt.type||'cleanup');
+    badge.textContent=pt.type==='cleanup'?'清扫':pt.type==='functional'?'★ 功能':'装饰';
+    info.appendChild(nm); info.appendChild(badge);
+    const btn = document.createElement('button');
+    if(isDone){btn.className='point-action-btn done';btn.textContent='已完成';}
+    else if(!isActive){btn.className='point-action-btn locked';btn.textContent='🔒 待解锁';}
+    else{
+      const ok=state.gold>=pt.cost;
+      btn.className='point-action-btn '+(ok?'can-act':'no-gold');
+      btn.textContent=(pt.type==='cleanup'?'清扫':'建设')+' 🪙'+pt.cost;
+      if(ok) btn.onclick=()=>doPointAction(tid,pt);
+    }
+    top.appendChild(ico);top.appendChild(info);top.appendChild(btn);
+    card.appendChild(top);
+    panel.appendChild(card);
+  });
+
+  outer.appendChild(panel);
+  content.appendChild(outer);
+}
+
+// 生成点位在地图上的伪随机但均匀分布坐标
+function generatePointPositions(count, mapW, mapH) {
+  const cols = Math.ceil(Math.sqrt(count * mapW / mapH));
+  const rows = Math.ceil(count / cols);
+  const cw = (mapW - 80) / cols, ch = (mapH - 80) / rows;
+  const positions = [];
+  for(let i = 0; i < count; i++){
+    const col = i % cols, row = Math.floor(i / cols);
+    // 加一点偏移让分布更自然
+    const jx = (((i * 7 + 3) % 5) - 2) * 12;
+    const jy = (((i * 11 + 5) % 5) - 2) * 14;
+    positions.push({
+      x: Math.round(40 + col * cw + cw/2 - 16 + jx),
+      y: Math.round(40 + row * ch + ch/2 - 16 + jy),
+    });
+  }
+  return positions;
+}
+
+function doPointAction(tid, pt) {
+  if (state.gold < pt.cost) { showToast('金币不够，先完成订单赚金币吧！'); return; }
+  state.gold -= pt.cost;
+  if (!state.garden.tiles[tid]) state.garden.tiles[tid] = [];
+  state.garden.tiles[tid].push(pt.id);
+  showGoldFloat(`-🪙${pt.cost}`);
+  playSound('produce');
+  if (pt.facilityId && CFG.FACILITIES[pt.facilityId]) {
+    applyFacilityEffect(pt.facilityId);
+  }
+  renderTopBar();
+  saveState();
+  // check full tile
+  const tc = CFG.TILES[tid];
+  if (tc && state.garden.tiles[tid].length >= tc.points.length) {
+    setTimeout(() => showModal('🎉 地块完成！', `<b>${tc.name}</b> 已全部建设完毕！`, '太棒了'), 300);
+  }
+  updateGardenBadge();
+  renderGarden();
+}
+
+function applyFacilityEffect(fid) {
+  const fac = CFG.FACILITIES[fid];
+  if (!fac || state.garden.facilities.includes(fid)) return;
+  state.garden.facilities.push(fid);
+  const effect = fac.effect;
+  if (effect === 'unlock_flower_bed_3') {
+    // place 3rd flower flowerbed on board
+    const emptyIdx = state.cells.findIndex(c => c === null);
+    if (emptyIdx >= 0) state.cells[emptyIdx] = mkItem('flowerbed', 1);
+    showUnlockPopup(`🌱 育苗架就位！第3个花圃已开启`);
+    renderBoard();
+  } else if (effect === 'unlock_flower_bed_4') {
+    const emptyIdx = state.cells.findIndex(c => c === null);
+    if (emptyIdx >= 0) state.cells[emptyIdx] = mkItem('flowerbed', 1);
+    showUnlockPopup(`🌻 花圃架就位！第4个花圃已开启`);
+    renderBoard();
+  } else if (effect === 'unlock_shrub_route') {
+    state.shrubRouteUnlocked = true;
+    const emptyIdx = state.cells.findIndex(c => c === null);
+    if (emptyIdx >= 0) state.cells[emptyIdx] = mkItem('shrubbed', 1);
+    showUnlockPopup(`🌿 灌木苗圃就位！灌木合成路线已解锁`);
+    renderBoard();
+  } else if (effect === 'unlock_fruit_route') {
+    state.fruitRouteUnlocked = true;
+    const emptyIdx = state.cells.findIndex(c => c === null);
+    if (emptyIdx >= 0) state.cells[emptyIdx] = mkItem('fruitbed', 1);
+    showUnlockPopup(`🌳 果树苗圃就位！果树合成路线已解锁`);
+    renderBoard();
+  } else if (effect === 'unlock_timed_order') {
+    state.timedOrderEnabled = true;
+    generateTimedOrder();
+    startTimedOrderTimer();
+    showUnlockPopup(`⛲ 喷泉角布置完成！限时订单已开通`);
+    renderOrders();
+  }
+}
+
+function showUnlockPopup(msg) {
+  const el = document.getElementById('unlock-popup');
+  el.textContent = msg;
+  el.classList.add('show');
+  setTimeout(() => el.classList.remove('show'), 2500);
+}
+
+function updateGardenBadge() {
+  // show badge if there are available actions (any zone unlocked and has unfinished points)
+  let hasAction = false;
+  for (const zone of CFG.ZONES) {
+    if (state.level < zone.unlockLevel) continue;
+    for (const tid of zone.tiles) {
+      if (!isTileDone(tid)) { hasAction = true; break; }
+    }
+    if (hasAction) break;
+  }
+  document.getElementById('garden-badge').classList.toggle('show', hasAction);
+}
+
+// ─────────────────── TIMED ORDER ───────────────────
+let timedOrderInterval = null;
+
+function generateTimedOrder() {
+  const types = ['flower'];
+  if (state.shrubRouteUnlocked) types.push('shrub');
+  if (state.fruitRouteUnlocked) types.push('fruit');
+  const itype = types[Math.floor(Math.random() * types.length)];
+  const lvlRange = state.level <= 4 ? [1,3] : state.level <= 7 ? [2,4] : [2,5];
+  const lvl = Math.floor(Math.random() * (lvlRange[1] - lvlRange[0] + 1)) + lvlRange[0];
+  const count = state.level <= 4 ? 1 : Math.random() < 0.5 ? 1 : 2;
+  const demands = [{ itype, level: lvl, count }];
+  const table = itype === 'shrub' ? CFG.SHRUBS : itype === 'fruit' ? CFG.FRUITS : CFG.FLOWERS;
+  const baseGold = demands.reduce((s,d) => s + table[d.level].gold * d.count, 0);
+  const baseExp  = demands.reduce((s,d) => s + table[d.level].exp  * d.count, 0);
+  state.timedOrder = {
+    demands,
+    gold: Math.ceil(baseGold * 1.5),
+    exp:  Math.ceil(baseExp  * 1.5),
+    remaining: CFG.TIMED_ORDER_DURATION,
+    status: 'pending',
+  };
+}
+
+function canFulfillTimedOrder() {
+  if (!state.timedOrder) return false;
+  const counts = {};
+  for (const c of state.cells) {
+    if (c) counts[`${c.type}:${c.level}`] = (counts[`${c.type}:${c.level}`] || 0) + 1;
+  }
+  return state.timedOrder.demands.every(d => (counts[`${d.itype||'flower'}:${d.level}`] || 0) >= d.count);
+}
+
+function completeTimedOrder() {
+  const to = state.timedOrder;
+  if (!to || to.status !== 'ready') return;
+  for (const d of to.demands) {
+    let need = d.count;
+    const dtype = d.itype || 'flower';
+    for (let i = 0; i < state.cells.length && need > 0; i++) {
+      const c = state.cells[i];
+      if (c && c.type === dtype && c.level === d.level) { state.cells[i] = null; need--; }
+    }
+  }
+  // quick bonus: extra 10% if remaining >= 300s
+  const bonus = to.remaining >= 300 ? Math.ceil(to.gold * 0.1) : 0;
+  state.gold += to.gold + bonus;
+  addExp(to.exp);
+  to.status = 'completed';
+  showGoldFloat(`+🪙${to.gold + bonus}${bonus ? ' 快速奖励!' : ''}`);
+  playSound('order');
+  renderBoard(); renderTopBar(); renderOrders(); saveState();
+  setTimeout(() => {
+    generateTimedOrder();
+    checkOrders();
+    renderOrders();
+    saveState();
+  }, 2000);
+}
+
+function startTimedOrderTimer() {
+  if (timedOrderInterval) clearInterval(timedOrderInterval);
+  timedOrderInterval = setInterval(() => {
+    if (!state.timedOrderEnabled || !state.timedOrder) return;
+    const to = state.timedOrder;
+    if (to.status === 'completed') return;
+    if (to.status === 'expired') return;
+    to.remaining = Math.max(0, to.remaining - 1);
+    if (to.remaining <= 0 && to.status !== 'expired') {
+      to.status = 'expired';
+      renderOrders();
+      saveState();
+      setTimeout(() => {
+        generateTimedOrder();
+        checkOrders();
+        renderOrders();
+        saveState();
+      }, 2000);
+    } else {
+      // update countdown display only
+      const cards = document.querySelectorAll('.order-card.timed, .order-card.timed-ready, .order-card.timed-expired');
+      cards.forEach(c => {
+        const cd = c.querySelector('.timed-countdown');
+        if (cd) {
+          const m = Math.floor(to.remaining/60), s = to.remaining%60;
+          cd.textContent = `⏱ ${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}`;
+          cd.className = 'timed-countdown' + (to.remaining < 120 ? ' urgent' : '');
+        }
+      });
+    }
+  }, 1000);
+}
+
 init();
+setupBoardEvents();
 </script>
 </body>
 </html>
