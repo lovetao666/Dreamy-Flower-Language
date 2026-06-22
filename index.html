@@ -103,6 +103,7 @@ body{background:linear-gradient(180deg,var(--bg1),var(--bg2));display:flex;flex-
 /* merge anim */
 @keyframes mergeIn{0%{transform:scale(0.3);opacity:0}60%{transform:scale(1.25)}100%{transform:scale(1);opacity:1}}
 @keyframes pulse{0%,100%{box-shadow:0 0 0 0 rgba(245,160,192,.45),0 3px 8px rgba(0,0,0,.25)}50%{box-shadow:0 0 0 8px rgba(245,160,192,.0),0 3px 8px rgba(0,0,0,.25)}}
+@keyframes labelPulse{0%,100%{opacity:.7;transform:scale(1)}50%{opacity:1;transform:scale(1.12)}}
 .merge-anim{animation:mergeIn .35s ease-out}
 
 /* stamina flash */
@@ -150,7 +151,7 @@ body{background:linear-gradient(180deg,var(--bg1),var(--bg2));display:flex;flex-
 .garden-gold-badge{background:rgba(255,255,255,.8);border-radius:999px;padding:3px 10px;font-size:12px;font-weight:700;color:var(--gd2)}
 
 /* zone overview */
-#zone-overview{flex:1;overflow-y:auto;padding:10px 12px;display:flex;flex-direction:column;gap:8px}
+#zone-overview{flex:1;position:relative;overflow:hidden}
 .zone-card{border-radius:14px;padding:12px 14px;background:rgba(255,255,255,.75);border:2px solid rgba(144,192,96,.3);cursor:pointer;transition:.15s;position:relative;overflow:hidden}
 .zone-card:active{transform:scale(.98)}
 .zone-card.locked{opacity:.55;cursor:default;filter:grayscale(.3)}
@@ -1165,112 +1166,192 @@ function isTileDone(tid) {
 }
 
 function renderZoneOverview(content) {
+  // ── 参考画布尺寸 2160×3840，按比例缩放到显示宽度 ──
+  const REF_W = 2160, REF_H = 3840;
+
   const wrap = document.createElement('div');
   wrap.id = 'zone-overview';
-  wrap.style.cssText = 'flex:1;position:relative;overflow:hidden;background:linear-gradient(180deg,#c8efff 0%,#d6f1c3 52%,#efce94 100%)';
+  wrap.style.cssText = 'flex:1;position:relative;overflow:hidden;background:#c8efff';
 
-  // 岛屿底图
-  const island = document.createElement('div');
-  island.style.cssText = 'position:absolute;inset:28px 22px 60px;border-radius:48% 52% 40% 42%;background:linear-gradient(145deg,#c9eda8,#8fd195);box-shadow:inset -15px -20px 25px #58946735';
-  wrap.appendChild(island);
+  // 地图容器：保持 9:16 比例，宽度撑满，高度自适应
+  const mapWrap = document.createElement('div');
+  mapWrap.style.cssText = 'position:absolute;inset:0;display:flex;align-items:flex-start;justify-content:center;overflow:hidden';
 
-  // 道路
-  [{s:'left:calc(50% - 22px);bottom:60px;width:44px;height:34%;border-radius:999px'},
-   {s:'left:calc(50% - 22px);top:7%;width:44px;height:28%;border-radius:999px'},
-   {s:'left:20%;top:40%;width:44px;height:19%;border-radius:999px;transform:rotate(57deg)'},
-   {s:'right:20%;top:40%;width:44px;height:19%;border-radius:999px;transform:rotate(-57deg)'}
-  ].forEach(r=>{
-    const d=document.createElement('div');
-    d.style.cssText=r.s+';position:absolute;background:#f4d49a;border:2px solid #fff2bd;z-index:2';
-    wrap.appendChild(d);
-  });
+  const mapInner = document.createElement('div');
+  mapInner.style.cssText = 'position:relative;width:100%;flex-shrink:0';
+  // 用 padding-bottom 保持 9:16 比例，减去底部进度条 48px
+  mapInner.style.paddingBottom = 'calc(' + (REF_H / REF_W * 100).toFixed(2) + '% - 48px)';
 
-  // 许愿树
-  const tree=document.createElement('div');
-  tree.style.cssText='position:absolute;left:calc(50% - 40px);top:37%;width:80px;height:80px;border-radius:50%;background:radial-gradient(circle,#fffbd0 0 34%,#d8b5ed 36% 48%,#fff 50%);z-index:5;display:grid;place-items:center;font-size:34px;box-shadow:0 0 22px #fff6a880';
-  tree.textContent='🌳';
-  wrap.appendChild(tree);
+  // 底图：完整浮空岛
+  const base = new Image();
+  base.src = 'assets/garden/map_full_island.png';
+  base.style.cssText = 'position:absolute;left:' + (20/REF_W*100).toFixed(3) + '%;top:' + (35/REF_H*100).toFixed(3) + '%;width:' + (2115/REF_W*100).toFixed(3) + '%;height:' + (3680/REF_H*100).toFixed(3) + '%;object-fit:fill;pointer-events:none';
+  mapInner.appendChild(base);
 
-  // 大门
-  const gate=document.createElement('div');
-  gate.style.cssText='position:absolute;bottom:60px;left:calc(50% - 18px);font-size:28px;z-index:7';
-  gate.textContent='🏰';
-  wrap.appendChild(gate);
+  // 入口大门
+  const gate = new Image();
+  gate.src = 'assets/garden/landmark_entrance_gate.png';
+  gate.style.cssText = 'position:absolute;left:' + (450/REF_W*100).toFixed(2) + '%;top:' + (3140/REF_H*100).toFixed(2) + '%;width:' + (1260/REF_W*100).toFixed(2) + '%;height:' + (530/REF_H*100).toFixed(2) + '%;object-fit:fill;pointer-events:none;z-index:3';
+  mapInner.appendChild(gate);
 
-  // 区域定义
-  const zoneDefs=[
-    {id:'Z01',label:'入口空地',color:'#bee29c',st:'left:calc(50% - 88px);bottom:14%;width:176px;height:158px;border-radius:50%'},
-    {id:'Z02',label:'花圃区',color:'#f1b7d0',st:'left:5%;top:38%;width:136px;height:156px;border-radius:50%'},
-    {id:'Z03',label:'果树区',color:'#b9dc88',st:'right:5%;top:40%;width:134px;height:150px;border-radius:50%'},
-    {id:'Z04',label:'水景区',color:'#a7dfdf',st:'right:7%;top:20%;width:146px;height:128px;border-radius:50%'},
-    {id:'Z05',label:'星光花廊',color:'#c0afea',st:'left:calc(50% - 86px);top:4%;width:172px;height:114px;border-radius:50%'},
+  // 中央许愿树
+  const ctree = new Image();
+  ctree.src = 'assets/garden/landmark_center_tree.png';
+  ctree.style.cssText = 'position:absolute;left:' + (625/REF_W*100).toFixed(2) + '%;top:' + (1340/REF_H*100).toFixed(2) + '%;width:' + (920/REF_W*100).toFixed(2) + '%;height:' + (1030/REF_H*100).toFixed(2) + '%;object-fit:fill;pointer-events:none;z-index:6';
+  mapInner.appendChild(ctree);
+
+  // 区域图层配置（与 layers.json 一致）
+  const zoneLayers = [
+    { id:'Z01', file:'zone_01_entrance.png', x:110,  y:2110, w:1940, h:1570 },
+    { id:'Z02', file:'zone_02_flower.png',   x:0,    y:460,  w:1080, h:1750 },
+    { id:'Z03', file:'zone_03_orchard.png',  x:1070, y:1220, w:1070, h:1730 },
+    { id:'Z04', file:'zone_04_water.png',    x:1070, y:270,  w:1080, h:1260 },
+    { id:'Z05', file:'zone_05_starlight.png',x:240,  y:0,    w:1800, h:720  },
   ];
 
-  zoneDefs.forEach(zd=>{
-    const zone=CFG.ZONES.find(z=>z.id===zd.id);
-    if(!zone) return;
-    const locked=state.level<zone.unlockLevel;
-    const prog=getZoneProgress(zone);
-    const pct=prog.total>0?prog.done/prog.total:0;
+  zoneLayers.forEach(zl => {
+    const cfgZone = CFG.ZONES.find(z => z.id === zl.id);
+    if (!cfgZone) return;
+    const locked = state.level < cfgZone.unlockLevel;
+    const prog = getZoneProgress(cfgZone);
+    const pct = prog.total > 0 ? prog.done / prog.total : 0;
 
-    const el=document.createElement('div');
-    el.style.cssText=zd.st+';position:absolute;z-index:4;border:2px solid #ffffffcc;box-shadow:0 8px 18px #4e574626;transition:transform .15s,filter .15s;cursor:'+(locked?'default':'pointer');
-    el.style.background=locked?'#b8b8b8':zd.color;
-    if(locked){el.style.opacity='0.42';el.style.filter='grayscale(0.5)';}
+    // 区域图片容器（用于叠加标签和交互）
+    const zoneWrap = document.createElement('div');
+    zoneWrap.style.cssText = 'position:absolute;z-index:4;'
+      + 'left:' + (zl.x/REF_W*100).toFixed(3) + '%;'
+      + 'top:'  + (zl.y/REF_H*100).toFixed(3) + '%;'
+      + 'width:'+ (zl.w/REF_W*100).toFixed(3) + '%;'
+      + 'height:'+(zl.h/REF_H*100).toFixed(3)+'%;'
+      + 'cursor:'+(locked?'default':'pointer')+';'
+      + 'transition:filter .15s,transform .15s';
 
-    if(!locked){
-      el.onmouseenter=()=>{el.style.transform='translateY(-3px)';el.style.filter='brightness(1.08)';};
-      el.onmouseleave=()=>{el.style.transform='';el.style.filter='';};
-      el.onclick=()=>{gardenCurrentZone=zd.id;gardenView='tiles';renderGarden();};
+    const img = new Image();
+    img.src = 'assets/garden/' + zl.file;
+    img.style.cssText = 'position:absolute;inset:0;width:100%;height:100%;object-fit:fill;border-radius:4%';
+    if (locked) img.style.cssText += ';filter:grayscale(0.7);opacity:0.45';
+    zoneWrap.appendChild(img);
+
+    if (!locked) {
+      zoneWrap.onmouseenter = () => { zoneWrap.style.filter = 'brightness(1.1) drop-shadow(0 4px 8px rgba(0,0,0,.25))'; zoneWrap.style.transform = 'translateY(-2px)'; };
+      zoneWrap.onmouseleave = () => { zoneWrap.style.filter = ''; zoneWrap.style.transform = ''; };
+      zoneWrap.onclick = () => { gardenCurrentZone = zl.id; gardenView = 'tiles'; renderGarden(); };
     }
 
-    const lbl=document.createElement('div');
-    lbl.style.cssText='position:absolute;left:50%;top:7px;transform:translateX(-50%);white-space:nowrap;padding:2px 7px;border-radius:999px;background:#ffffffd9;font-size:9px;font-weight:900;color:#3a2d4a';
-    lbl.textContent=locked?'🔒 Lv.'+zone.unlockLevel:zd.label;
-    el.appendChild(lbl);
+    // 锁定标签
+    if (locked) {
+      const lockBadge = document.createElement('div');
+      lockBadge.style.cssText = 'position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);padding:3px 8px;border-radius:999px;background:rgba(255,255,255,.85);font-size:9px;font-weight:900;color:#3a2d4a;white-space:nowrap;z-index:2';
+      lockBadge.textContent = '🔒 Lv.' + cfgZone.unlockLevel;
+      zoneWrap.appendChild(lockBadge);
+    } else {
+      // 区域名称
+      const nameBadge = document.createElement('div');
+      nameBadge.style.cssText = 'position:absolute;top:8%;left:50%;transform:translateX(-50%);padding:2px 8px;border-radius:999px;background:rgba(255,255,255,.88);font-size:9px;font-weight:900;color:#3a2d4a;white-space:nowrap;z-index:2;pointer-events:none';
+      nameBadge.textContent = cfgZone.name;
+      zoneWrap.appendChild(nameBadge);
 
-    if(!locked){
-      // 进度圆环
-      const svgNS='http://www.w3.org/2000/svg';
-      const svg=document.createElementNS(svgNS,'svg');
-      svg.setAttribute('viewBox','0 0 36 36');
-      svg.style.cssText='position:absolute;inset:18%;pointer-events:none;opacity:0.4';
-      const bg=document.createElementNS(svgNS,'circle');
-      bg.setAttribute('cx','18');bg.setAttribute('cy','18');bg.setAttribute('r','15');
-      bg.setAttribute('fill','none');bg.setAttribute('stroke','#fff');bg.setAttribute('stroke-width','2.5');
-      const fg=document.createElementNS(svgNS,'circle');
-      fg.setAttribute('cx','18');fg.setAttribute('cy','18');fg.setAttribute('r','15');
-      fg.setAttribute('fill','none');fg.setAttribute('stroke','#f2c562');fg.setAttribute('stroke-width','2.5');
-      const circ=(2*Math.PI*15).toFixed(1);
-      fg.setAttribute('stroke-dasharray',circ);
-      fg.setAttribute('stroke-dashoffset',(2*Math.PI*15*(1-pct)).toFixed(1));
-      fg.setAttribute('transform','rotate(-90 18 18)');
-      svg.appendChild(bg);svg.appendChild(fg);
-      el.appendChild(svg);
+      // 进度标签
+      const progBadge = document.createElement('div');
+      progBadge.style.cssText = 'position:absolute;bottom:10%;left:50%;transform:translateX(-50%);padding:2px 7px;border-radius:999px;background:rgba(255,255,255,.88);font-size:8px;font-weight:700;color:#3a2d4a;white-space:nowrap;z-index:2;pointer-events:none';
+      progBadge.textContent = pct >= 1 ? '✨ 全完成' : prog.done + '/' + prog.total;
+      zoneWrap.appendChild(progBadge);
 
-      const p=document.createElement('div');
-      p.style.cssText='position:absolute;bottom:8px;left:50%;transform:translateX(-50%);font-size:8px;font-weight:700;color:#3a2d4a;background:#ffffffcc;padding:2px 6px;border-radius:999px;white-space:nowrap';
-      p.textContent=pct>=1?'✨全完成':prog.done+'/'+prog.total;
-      el.appendChild(p);
+      // SVG 进度环
+      if (pct > 0) {
+        const svgNS = 'http://www.w3.org/2000/svg';
+        const svg = document.createElementNS(svgNS, 'svg');
+        svg.setAttribute('viewBox', '0 0 36 36');
+        svg.style.cssText = 'position:absolute;inset:15%;pointer-events:none;opacity:0.5;z-index:1';
+        const bg = document.createElementNS(svgNS, 'circle');
+        bg.setAttribute('cx','18');bg.setAttribute('cy','18');bg.setAttribute('r','15');
+        bg.setAttribute('fill','none');bg.setAttribute('stroke','rgba(255,255,255,.6)');bg.setAttribute('stroke-width','3');
+        const fg = document.createElementNS(svgNS, 'circle');
+        fg.setAttribute('cx','18');fg.setAttribute('cy','18');fg.setAttribute('r','15');
+        fg.setAttribute('fill','none');fg.setAttribute('stroke','#f2c562');fg.setAttribute('stroke-width','3');
+        const circ = (2*Math.PI*15).toFixed(1);
+        fg.setAttribute('stroke-dasharray', circ);
+        fg.setAttribute('stroke-dashoffset', (2*Math.PI*15*(1-pct)).toFixed(1));
+        fg.setAttribute('transform','rotate(-90 18 18)');
+        fg.style.transition = 'stroke-dashoffset .4s';
+        svg.appendChild(bg); svg.appendChild(fg);
+        zoneWrap.appendChild(svg);
+      }
     }
-    wrap.appendChild(el);
+    mapInner.appendChild(zoneWrap);
   });
 
-  // 底部总进度条
-  const totalDone=CFG.ZONES.reduce((s,z)=>s+getZoneProgress(z).done,0);
-  const totalAll =CFG.ZONES.reduce((s,z)=>s+getZoneProgress(z).total,0);
-  const footer=document.createElement('div');
-  footer.style.cssText='position:absolute;bottom:0;left:0;right:0;height:48px;padding:6px 12px;background:#ffffffcc;border-top:1px solid #d0eec0;z-index:20;display:flex;align-items:center;gap:8px';
-  const bw=document.createElement('div');
-  bw.style.cssText='flex:1;height:6px;border-radius:3px;background:#d0eec0;overflow:hidden';
-  const bf=document.createElement('div');
-  bf.style.cssText='height:100%;border-radius:3px;background:linear-gradient(90deg,#90c060,#40a010);transition:.4s';
-  bf.style.width=totalAll>0?(totalDone/totalAll*100).toFixed(0)+'%':'0%';
+  // 地块编号图标（22个 label_xx.png）
+  // labels 坐标来自 layers.json，center_x/center_y，尺寸 192×192
+  const labelData = [
+    {n:1,cx:620,cy:2780},{n:2,cx:1080,cy:2800},{n:3,cx:1540,cy:2780},
+    {n:4,cx:520,cy:2390},{n:5,cx:1080,cy:2420},{n:6,cx:1640,cy:2390},
+    {n:7,cx:430,cy:1900},{n:8,cx:620,cy:1660},{n:9,cx:500,cy:1390},
+    {n:10,cx:650,cy:1120},{n:11,cx:810,cy:760},
+    {n:12,cx:1570,cy:2010},{n:13,cx:1750,cy:1770},{n:14,cx:1710,cy:1460},{n:15,cx:1610,cy:1190},
+    {n:16,cx:1480,cy:990},{n:17,cx:1620,cy:760},{n:18,cx:1780,cy:600},{n:19,cx:1510,cy:490},
+    {n:20,cx:580,cy:300},{n:21,cx:1080,cy:300},{n:22,cx:1540,cy:300},
+  ];
+  const SZ = 192; // label icon size in ref coords
+  const tileIdByLabel = [
+    'Z01_T01','Z01_T02','Z01_T03','Z01_T04','Z01_T05','Z01_T06',
+    'Z02_T01','Z02_T02','Z02_T03','Z02_T04','Z02_T05',
+    'Z03_T01','Z03_T02','Z03_T03','Z03_T04',
+    'Z04_T01','Z04_T02','Z04_T03','Z04_T04',
+    'Z05_T01','Z05_T02','Z05_T03',
+  ];
+
+  labelData.forEach((lb, i) => {
+    const tid = tileIdByLabel[i];
+    const tc = CFG.TILES[tid];
+    const done = tc ? isTileDone(tid) : false;
+    const prog = tc ? getTileProgress(tid) : {done:0,total:0};
+    const isActive = tc && prog.done > 0 && !done;
+
+    const lx = (lb.cx - SZ/2) / REF_W * 100;
+    const ly = (lb.cy - SZ/2) / REF_H * 100;
+    const lw = SZ / REF_W * 100;
+    const lh = SZ / REF_H * 100;
+
+    const lWrap = document.createElement('div');
+    lWrap.style.cssText = 'position:absolute;z-index:8;'
+      + 'left:'+lx.toFixed(3)+'%;top:'+ly.toFixed(3)+'%;'
+      + 'width:'+lw.toFixed(3)+'%;';
+    lWrap.style.aspectRatio = '1';
+
+    const lImg = new Image();
+    lImg.src = 'assets/garden/label_' + String(lb.n).padStart(2,'0') + '.png';
+    lImg.style.cssText = 'width:100%;height:100%;object-fit:contain;pointer-events:none;display:block';
+    if (done) {
+      lImg.style.filter = 'drop-shadow(0 0 3px #f2c562)';
+    } else if (isActive) {
+      lImg.style.filter = 'drop-shadow(0 0 3px #ed88b2)';
+      lImg.style.animation = 'labelPulse 1.4s infinite';
+    } else {
+      lImg.style.opacity = '0.65';
+    }
+    lWrap.appendChild(lImg);
+    mapInner.appendChild(lWrap);
+  });
+
+  mapWrap.appendChild(mapInner);
+  wrap.appendChild(mapWrap);
+
+  // ── 底部总进度条（固定高度 48px）──
+  const totalDone = CFG.ZONES.reduce((s,z) => s + getZoneProgress(z).done, 0);
+  const totalAll  = CFG.ZONES.reduce((s,z) => s + getZoneProgress(z).total, 0);
+  const footer = document.createElement('div');
+  footer.style.cssText = 'position:absolute;bottom:0;left:0;right:0;height:48px;padding:6px 12px;background:rgba(255,255,255,.88);border-top:1px solid #d0eec0;z-index:20;display:flex;align-items:center;gap:8px';
+  const bw = document.createElement('div');
+  bw.style.cssText = 'flex:1;height:6px;border-radius:3px;background:#d0eec0;overflow:hidden';
+  const bf = document.createElement('div');
+  bf.style.cssText = 'height:100%;border-radius:3px;background:linear-gradient(90deg,#90c060,#40a010);transition:.4s';
+  bf.style.width = totalAll > 0 ? (totalDone/totalAll*100).toFixed(1)+'%' : '0%';
   bw.appendChild(bf);
-  const bt=document.createElement('span');
-  bt.style.cssText='font-size:10px;font-weight:700;color:#3a2d4a;white-space:nowrap';
-  bt.textContent='花园进度 '+totalDone+'/'+totalAll;
-  footer.appendChild(bw);footer.appendChild(bt);
+  const bt = document.createElement('span');
+  bt.style.cssText = 'font-size:10px;font-weight:700;color:#3a2d4a;white-space:nowrap';
+  bt.textContent = '花园进度 ' + totalDone + '/' + totalAll;
+  footer.appendChild(bw); footer.appendChild(bt);
   wrap.appendChild(footer);
 
   content.appendChild(wrap);
